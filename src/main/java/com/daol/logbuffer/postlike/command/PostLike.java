@@ -1,6 +1,6 @@
 package com.daol.logbuffer.postlike.command;
 
-import com.daol.logbuffer.post.command.post.PostId;
+import com.daol.logbuffer.post.command.PostId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;

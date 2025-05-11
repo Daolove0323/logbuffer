@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -41,9 +40,6 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @NotNull
     private Grade grade;
-
-    @OneToOne(mappedBy = "member")
-    private ProfileImage profileImage;
 
     @Column(name = "created_date")
     private LocalDateTime createdDate;

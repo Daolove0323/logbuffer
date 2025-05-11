@@ -1,12 +1,11 @@
 package com.daol.logbuffer.post.application;
 
-import com.daol.logbuffer.post.command.image.PostImageRepository;
-import com.daol.logbuffer.post.command.image.PostThumbnailImageRepository;
-import com.daol.logbuffer.post.command.post.Post;
-import com.daol.logbuffer.post.command.post.PostAuthorId;
-import com.daol.logbuffer.post.command.post.PostId;
-import com.daol.logbuffer.post.command.post.PostRepository;
-import java.util.UUID;
+import com.daol.logbuffer.image.domain.postimage.PostImageRepository;
+import com.daol.logbuffer.image.domain.postthumbnailimage.PostThumbnailImageRepository;
+import com.daol.logbuffer.post.command.Post;
+import com.daol.logbuffer.post.command.PostAuthorId;
+import com.daol.logbuffer.post.command.PostId;
+import com.daol.logbuffer.post.command.PostRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

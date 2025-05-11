@@ -1,7 +1,7 @@
 package com.daol.logbuffer.post.application;
 
 
-import com.daol.logbuffer.post.command.post.Post;
+import com.daol.logbuffer.post.command.Post;
 import java.time.LocalDateTime;
 import java.util.UUID;
 

@@ -5,7 +5,7 @@ import com.daol.logbuffer.comment.command.Comment;
 import com.daol.logbuffer.comment.command.CommentAuthorId;
 import com.daol.logbuffer.comment.command.CommentCreatedEvent;
 import com.daol.logbuffer.comment.command.CommentRepository;
-import com.daol.logbuffer.post.command.post.PostId;
+import com.daol.logbuffer.post.command.PostId;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -3,7 +3,7 @@ package com.daol.logbuffer.comment.query;
 import com.daol.logbuffer.comment.command.CommentAuthorId;
 import com.daol.logbuffer.comment.command.CommentId;
 import com.daol.logbuffer.comment.command.CommentState;
-import com.daol.logbuffer.post.command.post.PostId;
+import com.daol.logbuffer.post.command.PostId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;

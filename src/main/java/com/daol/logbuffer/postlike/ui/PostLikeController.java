@@ -1,7 +1,7 @@
 package com.daol.logbuffer.postlike.ui;
 
 import com.daol.logbuffer._common.api.ApiResponse;
-import com.daol.logbuffer.post.command.post.PostId;
+import com.daol.logbuffer.post.command.PostId;
 import com.daol.logbuffer.postlike.application.PostLikeToggleService;
 import com.daol.logbuffer.postlike.command.PostLikerId;
 import com.daol.logbuffer.postlike.query.PostLikeQueryService;

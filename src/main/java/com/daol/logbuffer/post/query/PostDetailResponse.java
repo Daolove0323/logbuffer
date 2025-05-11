@@ -1,7 +1,7 @@
 package com.daol.logbuffer.post.query;
 
 import com.daol.logbuffer.member.PostMemberResponse;
-import com.daol.logbuffer.post.command.post.PostState;
+import com.daol.logbuffer.post.command.PostState;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

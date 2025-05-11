@@ -1,6 +1,6 @@
 package com.daol.logbuffer.postlike.application;
 
-import com.daol.logbuffer.post.command.post.PostId;
+import com.daol.logbuffer.post.command.PostId;
 import com.daol.logbuffer.postlike.command.PostLike;
 import com.daol.logbuffer.postlike.command.PostLikeRepository;
 import com.daol.logbuffer.postlike.command.PostLikerId;

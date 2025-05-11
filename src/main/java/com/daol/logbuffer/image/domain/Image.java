@@ -1,7 +1,7 @@
-package com.daol.logbuffer.image;
+package com.daol.logbuffer.image.domain;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotNull;
@@ -15,13 +15,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class Image {
 
-    @EmbeddedId
-    private ImageId id;
-
-    @Column(name = "url")
-    @NotNull
-    private String url;
-
+    @Embedded
     private UploaderId uploaderId;
 
     @Column(name = "Created_date")
@@ -29,12 +23,15 @@ public abstract class Image {
     private LocalDateTime createdDate;
 
     protected Image() {
-        this.id = ImageId.generate();
     }
 
-    protected Image(String url, UploaderId uploaderId) {
-        this.id = ImageId.generate();
-        this.url = url;
+    protected Image(UploaderId uploaderId) {
         this.uploaderId = uploaderId;
+    }
+
+    public void verifyUploader(UploaderId uploaderId) {
+        if (!uploaderId.equals(this.uploaderId)) {
+            throw new RuntimeException();
+        }
     }
 }

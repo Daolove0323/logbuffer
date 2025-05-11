@@ -1,7 +1,7 @@
 package com.daol.logbuffer.comment.query;
 
 import com.daol.logbuffer.comment.command.CommentId;
-import com.daol.logbuffer.post.command.post.PostId;
+import com.daol.logbuffer.post.command.PostId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

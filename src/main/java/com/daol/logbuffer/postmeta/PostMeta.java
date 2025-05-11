@@ -2,7 +2,7 @@ package com.daol.logbuffer.postmeta;
 
 import com.daol.logbuffer.comment.command.CommentCreatedEvent;
 import com.daol.logbuffer.comment.command.CommentDeletedEvent;
-import com.daol.logbuffer.post.command.post.PostId;
+import com.daol.logbuffer.post.command.PostId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.EmbeddedId;

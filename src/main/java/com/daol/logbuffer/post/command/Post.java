@@ -1,10 +1,7 @@
-package com.daol.logbuffer.post.command.post;
+package com.daol.logbuffer.post.command;
 
 import com.daol.logbuffer.category.CategoryId;
 import com.daol.logbuffer.hashtag.HashtagId;
-import com.daol.logbuffer.post.command.image.PostImage;
-import com.daol.logbuffer.post.command.image.PostThumbnailImage;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -16,8 +13,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -56,12 +51,6 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private PostState state;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostImage> postImages;
-
-    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private PostThumbnailImage postThumbnailImage;
-
     @Column(name = "created_date")
     @CreatedDate
     private LocalDateTime createdDate;
@@ -75,8 +64,7 @@ public class Post {
     }
 
     private Post(String title, PostContent content, PostAuthorId postAuthorId,
-        CategoryId categoryId,
-        Set<HashtagId> hashtagIds, PostState state) {
+        CategoryId categoryId, Set<HashtagId> hashtagIds, PostState state) {
         this.id = PostId.generate();
         this.title = title;
         this.content = content;
@@ -87,10 +75,8 @@ public class Post {
     }
 
     public static Post create(String title, String content, PostAuthorId authorId,
-        CategoryId categoryId,
-        List<HashtagId> hashtagIds, PostState state,
-        PostThumbnailImage postThumbnailImage) {
-        Post post = new Post(
+        CategoryId categoryId, List<HashtagId> hashtagIds, PostState state) {
+        return new Post(
             title,
             new PostContent(content),
             authorId,
@@ -98,20 +84,16 @@ public class Post {
             new HashSet<>(hashtagIds),
             state
         );
-        post.changePostThumbnailImage(postThumbnailImage);
-        return post;
     }
 
     public void updateDetails(String title, String content, CategoryId categoryId,
         List<HashtagId> hashtagIds,
-        PostState state, List<PostImage> postImages, PostThumbnailImage postThumbnailImage) {
+        PostState state) {
         changeTitle(title);
         changeContent(content);
         changeCategory(categoryId);
         changeHashtags(hashtagIds);
         changeState(state);
-        changePostImage(postImages);
-        changePostThumbnailImage(postThumbnailImage);
     }
 
     public void changeTitle(String title) {
@@ -132,17 +114,6 @@ public class Post {
 
     private void changeState(PostState state) {
         this.state = state;
-    }
-
-    private void changePostImage(List<PostImage> postImages) {
-        postImages.forEach(image -> image.setPost(this));
-        this.postImages = postImages;
-    }
-
-    private void changePostThumbnailImage(PostThumbnailImage postThumbnailImage) {
-        if (postThumbnailImage == null) return;
-        this.postThumbnailImage = postThumbnailImage;
-        this.postThumbnailImage.setPost(this);
     }
 
     public void publish() {

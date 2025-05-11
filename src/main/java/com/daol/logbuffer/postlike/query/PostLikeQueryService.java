@@ -1,6 +1,6 @@
 package com.daol.logbuffer.postlike.query;
 
-import com.daol.logbuffer.post.command.post.PostId;
+import com.daol.logbuffer.post.command.PostId;
 import com.daol.logbuffer.postlike.command.PostLikeRepository;
 import com.daol.logbuffer.postlike.command.PostLikerId;
 import lombok.AccessLevel;

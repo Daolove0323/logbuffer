@@ -14,7 +14,7 @@ import com.daol.logbuffer.comment.command.CommentAuthorId;
 import com.daol.logbuffer.comment.command.CommentId;
 import com.daol.logbuffer.comment.query.CommentQueryService;
 import com.daol.logbuffer.comment.query.CommentResponse;
-import com.daol.logbuffer.post.command.post.PostId;
+import com.daol.logbuffer.post.command.PostId;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

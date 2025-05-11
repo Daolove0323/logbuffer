@@ -1,4 +1,4 @@
-package com.daol.logbuffer.image;
+package com.daol.logbuffer.image.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

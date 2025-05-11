@@ -1,7 +1,7 @@
 package com.daol.logbuffer.comment.query;
 
 import com.daol.logbuffer._common.api.PageResponse;
-import com.daol.logbuffer.post.command.post.PostId;
+import com.daol.logbuffer.post.command.PostId;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

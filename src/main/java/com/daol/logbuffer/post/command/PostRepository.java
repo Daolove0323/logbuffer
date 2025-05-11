@@ -1,4 +1,4 @@
-package com.daol.logbuffer.post.command.post;
+package com.daol.logbuffer.post.command;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

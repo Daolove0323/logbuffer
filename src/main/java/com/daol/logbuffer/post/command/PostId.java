@@ -1,4 +1,4 @@
-package com.daol.logbuffer.image;
+package com.daol.logbuffer.post.command;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -12,16 +12,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode
-public class ImageId {
+public class PostId {
 
-    @Column(name = "image_id")
+    @Column(name = "post_id")
     private UUID value;
 
-    public ImageId(UUID value) {
+    public PostId(UUID value) {
         this.value = value;
     }
 
-    public static ImageId generate() {
-        return new ImageId(UUID.randomUUID());
+    public static PostId generate() {
+        return new PostId(UUID.randomUUID());
     }
 }

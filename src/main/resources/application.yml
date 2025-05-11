@@ -8,7 +8,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/logbuffer
+    url: ${MYSQL_URL}
     username: ${MYSQL_USER_NAME}
     password: ${MYSQL_PASSWORD}
   jpa:
@@ -24,6 +24,7 @@ image:
   api-url: http://localhost:8080/api/images
   post-directory: post
   post-thumbnail-directory: post_th
+  member-directory: member
   storage-path: src/main/resources/static/images
 
 post:
