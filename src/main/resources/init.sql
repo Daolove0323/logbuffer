@@ -1,0 +1,25 @@
+set foreign_key_checks = 0;
+truncate table category;
+truncate table comment;
+truncate table hashtag;
+truncate table member;
+truncate table post;
+truncate table post_hashtag;
+truncate table post_image;
+truncate table post_thumbnail_image;
+truncate table profile_image;
+truncate table post_like;
+truncate table post_meta;
+
+insert into category (category_id, name) VALUES (UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), '자유게시판');
+insert into comment (created_date, modified_date, author_id, comment_id, post_id, content) VALUES (now(), now(), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), '내용입니다.');
+insert into hashtag (hashtag_id, name) VALUES (UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), '자유');
+insert into member (member_id, created_date, email, grade, login_type, name) VALUES (UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), '2023-10-01 00:00:00', 'whghdtlr0323@naver.com', 'ADMIN', 'APPLE', '홍식');
+insert into post (created_date, modified_date, category_id, post_author_id, post_id, content, title, post_state) VALUES ('2023-10-01 00:00:00', '2023-10-01 00:00:00', UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), '내용입니다.', '제목입니다.', 'PUBLISHED');
+insert into member (member_id, created_date, email, grade, login_type, name) VALUES (UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), '2023-10-01 00:00:00', 'whghdtlr0323@naver.com', 'ADMIN', 'APPLE', '홍식');
+insert into post_hashtag (post_id, hashtag_id) values (UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')));
+insert into post_image (image_id, created_date, uploader_id, url, post_id) VALUES (UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), '2023-10-01 00:00:00', UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), 'https://example.com/image1.jpg', UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')));
+insert into post_thumbnail_image (image_id, created_date, uploader_id, url, post_id) VALUES (UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), '2023-10-01 00:00:00', UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), 'https://example.com/image1.jpg', UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')));
+insert into profile_image (created_date, image_id, member_id, uploader_id, url) VALUES (now(), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), 'https://example.com/image1.jpg');
+insert into post_like (created_date, liker_id, post_id, post_like_id) VALUES (now(), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')));
+insert into post_meta (comment_count, like_count, modified_date, post_id, hashtags) VALUES (0, 0, now(), UNHEX(REPLACE('550e8400-e29b-41d4-a716-446655440000', '-', '')), '자유');
