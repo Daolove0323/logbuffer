@@ -1,0 +1,48 @@
+spring:
+  application.name: logbuffer
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USER_NAME}
+    password: ${MYSQL_PASSWORD}
+  jpa:
+
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+
+jwt:
+  secret: ${ JWT_SECRET }
+  access-expiration: 8640000000
+  refresh-expiration: 604800000
+
+security:
+  password:
+    iterations: ${PASSWORD_ITERATIONS}
+    memory: ${PASSWORD_MEMORY}
+    parallelism: ${PASSWORD_PARALLELISM}
+
+image:
+  api-url: http://localhost:8080/api/images
+  post-directory: post
+  post-thumbnail-directory: post_th
+  profile-directory: profile
+  storage-path: src/main/resources/static/images
+
+post:
+  preview-length: 100
+
+app:
+  attribute:
+    member: member
