@@ -23,8 +23,8 @@ spring:
 
 
 jwt:
-  secret: ${ JWT_SECRET }
-  access-expiration: 8640000000
+  secret: ${JWT_SECRET}
+  access-expiration: 86400000
   refresh-expiration: 604800000
 
 security:
@@ -34,7 +34,7 @@ security:
     parallelism: ${PASSWORD_PARALLELISM}
 
 image:
-  api-url: http://localhost:8080/api/images
+  api-url: ${IMAGE_API_URL}
   post-directory: post
   post-thumbnail-directory: post_th
   profile-directory: profile
