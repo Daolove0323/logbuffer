@@ -1,4 +1,4 @@
-package com.daol.logbuffer.comment.command;
+package com.daol.logbuffer.comment.comment.command;
 
 import com.daol.logbuffer.member.domain.MemberId;
 import jakarta.persistence.Column;

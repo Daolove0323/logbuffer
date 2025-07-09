@@ -1,4 +1,4 @@
-package com.daol.logbuffer.comment.command;
+package com.daol.logbuffer.comment.comment.command;
 
 import org.springframework.data.repository.CrudRepository;
 

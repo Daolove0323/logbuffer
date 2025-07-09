@@ -23,7 +23,7 @@ public class ProfileImage extends Image {
         return new ProfileImage(uploaderId);
     }
 
-    public void changeMemberId(MemberId memberId) {
+    public void setMemberReference(MemberId memberId) {
         this.memberId = memberId;
     }
 }

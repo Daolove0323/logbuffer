@@ -21,6 +21,8 @@ public abstract class ImageService<T extends Image> {
 
     abstract T createImageEntity(UploaderId uploaderId);
 
+    abstract void setImageReference(String fileName, Object id);
+
     public byte[] readImage(String fileName) {
         return fileStorage.readFile(imagePathService.getImagePath(getImageType()), fileName);
     }

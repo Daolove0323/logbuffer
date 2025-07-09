@@ -1,4 +1,4 @@
-package com.daol.logbuffer.comment.query;
+package com.daol.logbuffer.comment.comment.query;
 
 import com.daol.logbuffer._common.api.PageResponse;
 import com.daol.logbuffer.post.command.PostId;

@@ -14,7 +14,7 @@ public interface HashtagRepository extends JpaRepository<Hashtag, HashtagId> {
         where h.id in :hashtagIds
         and not exists (
         select 'x'
-        from Post p 
+        from Post p
         join p.hashtagIds ph
         where ph.value = h.id.value
         )

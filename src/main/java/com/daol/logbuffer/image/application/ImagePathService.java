@@ -25,6 +25,6 @@ public class ImagePathService {
     }
 
     public String getImageUrl(ImageType type, String fileName) {
-        return String.format("%s/%s/%s", imageConfig.getImageApiUrl(), getDirectory(type), fileName);
+        return String.format("%s/%s/%s", imageConfig.getImageApiUrl(), type.name(), fileName);
     }
 }

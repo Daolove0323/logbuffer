@@ -33,6 +33,7 @@ public abstract class Image {
     private LocalDateTime createdDate;
 
     protected Image(UploaderId uploaderId) {
+        this.id = ImageId.generate();
         this.uploaderId = uploaderId;
     }
 

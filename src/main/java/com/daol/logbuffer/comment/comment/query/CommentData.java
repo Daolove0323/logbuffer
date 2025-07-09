@@ -1,8 +1,8 @@
-package com.daol.logbuffer.comment.query;
+package com.daol.logbuffer.comment.comment.query;
 
-import com.daol.logbuffer.comment.command.CommentAuthorId;
-import com.daol.logbuffer.comment.command.CommentId;
-import com.daol.logbuffer.comment.command.CommentState;
+import com.daol.logbuffer.comment.comment.command.CommentAuthorId;
+import com.daol.logbuffer.comment.comment.command.CommentId;
+import com.daol.logbuffer.comment.comment.command.CommentState;
 import com.daol.logbuffer.post.command.PostId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

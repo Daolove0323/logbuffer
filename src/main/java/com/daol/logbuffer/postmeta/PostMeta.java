@@ -27,9 +27,9 @@ public class PostMeta {
     protected PostMeta() {
     }
 
-    public static PostMeta create(List<String> hashtags) {
+    public static PostMeta create(PostId postId, List<String> hashtags) {
         PostMeta postMeta = new PostMeta();
-        postMeta.id = PostId.generate();
+        postMeta.id = postId;
         postMeta.likeCount = 0;
         postMeta.commentCount = 0;
         postMeta.hashtags = hashtags;

@@ -4,7 +4,7 @@ import com.daol.logbuffer._common.argresolver.Auth;
 import com.daol.logbuffer._common.exception.UnauthenticatedException;
 import com.daol.logbuffer.member.auth.AuthMember;
 import com.daol.logbuffer.member.auth.AuthService;
-import com.daol.logbuffer.member.auth.Token;
+import com.daol.logbuffer.member.auth.TokenResponse;
 import com.daol.logbuffer.member.infra.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -52,8 +52,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         // 토큰을 통한 인증/인가
-        Token token = extractToken(request);
-        AuthMember member = jwtUtil.parseTokenToMember(token);
+        TokenResponse tokenResponse = extractToken(request);
+        AuthMember member = jwtUtil.parseTokenToMember(tokenResponse);
         authService.validateMemberExists(member);
         authService.validateAuthorization(member, auth.value());
 
@@ -61,11 +61,11 @@ public class AuthInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private Token extractToken(HttpServletRequest request) {
+    private TokenResponse extractToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (!StringUtils.hasText(bearerToken) || !bearerToken.startsWith(BEARER_PREFIX)) {
             throw new UnauthenticatedException("토큰이 유효하지 않습니다.");
         }
-        return new Token(bearerToken.substring(BEARER_PREFIX_LENGTH));
+        return new TokenResponse(bearerToken.substring(BEARER_PREFIX_LENGTH));
     }
 }

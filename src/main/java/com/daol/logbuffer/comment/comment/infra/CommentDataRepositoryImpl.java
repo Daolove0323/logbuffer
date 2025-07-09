@@ -1,14 +1,14 @@
-package com.daol.logbuffer.comment.infra;
+package com.daol.logbuffer.comment.comment.infra;
 
-import static com.daol.logbuffer.comment.query.QCommentData.commentData;
+import static com.daol.logbuffer.comment.comment.query.QCommentData.commentData;
 import static com.daol.logbuffer.image.domain.QProfileImage.profileImage;
 import static com.daol.logbuffer.member.domain.QMember.member;
 
 import com.daol.logbuffer._common.config.ImageConfig;
-import com.daol.logbuffer.comment.command.CommentState;
-import com.daol.logbuffer.comment.query.CommentDataRepository;
-import com.daol.logbuffer.comment.query.CommentResponse;
-import com.daol.logbuffer.comment.query.QCommentResponse;
+import com.daol.logbuffer.comment.comment.command.CommentState;
+import com.daol.logbuffer.comment.comment.query.CommentDataRepository;
+import com.daol.logbuffer.comment.comment.query.CommentResponse;
+import com.daol.logbuffer.comment.comment.query.QCommentResponse;
 import com.daol.logbuffer.member.query.QCommentMemberResponse;
 import com.daol.logbuffer.post.command.PostId;
 import com.querydsl.core.types.Expression;

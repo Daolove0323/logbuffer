@@ -1,12 +1,12 @@
-package com.daol.logbuffer.comment.application;
+package com.daol.logbuffer.comment.comment.application;
 
 import com.daol.logbuffer._common.event.CommentDeletedEvent;
 import com.daol.logbuffer._common.event.Events;
 import com.daol.logbuffer._common.exception.EntityNotFoundException;
-import com.daol.logbuffer.comment.command.Comment;
-import com.daol.logbuffer.comment.command.CommentAuthorId;
-import com.daol.logbuffer.comment.command.CommentId;
-import com.daol.logbuffer.comment.command.CommentRepository;
+import com.daol.logbuffer.comment.comment.command.Comment;
+import com.daol.logbuffer.comment.comment.command.CommentAuthorId;
+import com.daol.logbuffer.comment.comment.command.CommentId;
+import com.daol.logbuffer.comment.comment.command.CommentRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

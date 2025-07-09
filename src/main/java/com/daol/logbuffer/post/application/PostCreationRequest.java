@@ -8,6 +8,7 @@ public record PostCreationRequest(
 
     // Todo: Validation 추가
     String title,
+    String description,
     String content,
     UUID categoryId,
     List<UUID> hashtagIds,

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // Todo: 커스텀 에러코드 정의
+    ARGUMNET_NOT_VALID(HttpStatus.BAD_REQUEST.value(), "-40000"),
     ENTITY_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "-40400"),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST.value(), "-40001"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), "-40100"),

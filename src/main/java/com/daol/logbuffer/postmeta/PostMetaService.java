@@ -16,9 +16,9 @@ public class PostMetaService {
 
     @Transactional
     public void createPostMeta(PostId postId, List<String> hashtags) {
-        postMetaRepository.save(PostMeta.create(hashtags));
+        postMetaRepository.save(PostMeta.create(postId, hashtags));
     }
-    
+
     @Transactional
     public void incrementCommentCount(PostId postId) {
         PostMeta postMeta = postMetaRepository.findById(postId)

@@ -41,6 +41,9 @@ public class PostData {
     @Column(name = "title")
     private String title;
 
+    @Column(name = "description")
+    private String description;
+
     @Embedded
     private PostContent content;
 

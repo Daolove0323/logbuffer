@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -40,9 +39,6 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostDataRepositoryImpl implements PostDataRepository {
 
-    @Value("${post.preview-length}")
-    private int PREVIEW_CONTENT_LENGTH;
-
     private final ImageConfig imageConfig;
     private final JPAQueryFactory queryFactory;
 
@@ -51,7 +47,7 @@ public class PostDataRepositoryImpl implements PostDataRepository {
             .select(new QPostPreviewResponse(
                 postData.id.value,
                 postData.title,
-                postData.content.text.substring(0, PREVIEW_CONTENT_LENGTH),
+                postData.description,
                 new QPostMemberResponse(
                     postData.postAuthorId.value,
                     member.name,
@@ -68,7 +64,7 @@ public class PostDataRepositoryImpl implements PostDataRepository {
             .from(postData)
             .leftJoin(member).on(postData.postAuthorId.value.eq(member.id.value))
             .leftJoin(profileImage).on(member.id.eq(profileImage.memberId))
-            .leftJoin(postThumbnailImage).on(postData.id.value.eq(postThumbnailImage.id.value))
+            .leftJoin(postThumbnailImage).on(postData.id.value.eq(postThumbnailImage.postId.value))
             .leftJoin(postMeta).on(postData.id.eq(postMeta.id))
             .leftJoin(category).on(postData.categoryId.eq(category.id));
     }
@@ -186,6 +182,7 @@ public class PostDataRepositoryImpl implements PostDataRepository {
             .leftJoin(postThumbnailImage).on(postData.id.value.eq(postThumbnailImage.id.value))
             .leftJoin(postMeta).on(postData.id.eq(postMeta.id))
             .leftJoin(category).on(postData.categoryId.eq(category.id))
+            .where(postData.id.value.eq(postId.getValue()))
             .fetchOne();
         return Optional.ofNullable(res);
     }

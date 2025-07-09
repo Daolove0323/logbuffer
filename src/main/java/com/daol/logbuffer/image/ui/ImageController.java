@@ -29,17 +29,17 @@ public class ImageController {
     @GetMapping(value = "/{type}/{fileName}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
     public ResponseEntity<byte[]> getImage(
         @PathVariable String fileName,
-        @PathVariable ImageType type
+        @PathVariable String type
     ) {
-        return ApiResponse.ok(imageServiceFactory.get(type).readImage(fileName));
+        return ApiResponse.ok(imageServiceFactory.get(ImageType.valueOf(type)).readImage(fileName));
     }
 
     @PostMapping("/{type}")
     public ResponseEntity<ImageResponse> uploadImage(
         @RequestParam MultipartFile image,
-        @PathVariable ImageType type,
+        @PathVariable String type,
         @Auth(Grade.NORMAL) AuthMember member
     ) {
-        return ApiResponse.ok(imageServiceFactory.get(type).createImage(new UploaderId(member.memberId()), image));
+        return ApiResponse.ok(imageServiceFactory.get(ImageType.valueOf(type)).createImage(new UploaderId(member.memberId()), image));
     }
 }

@@ -23,7 +23,7 @@ public class PostImage extends Image {
         return new PostImage(uploaderId);
     }
 
-    public void changePostId(PostId postId) {
+    public void setPostReference(PostId postId) {
         this.postId = postId;
     }
 }

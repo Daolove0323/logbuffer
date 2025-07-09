@@ -1,6 +1,6 @@
 package com.daol.logbuffer.member.infra;
 
-import com.daol.logbuffer.member.auth.Token;
+import com.daol.logbuffer.member.auth.TokenResponse;
 import com.daol.logbuffer.member.common.Grade;
 import com.daol.logbuffer.member.domain.MemberId;
 import com.daol.logbuffer.member.domain.TokenGenerator;
@@ -15,7 +15,7 @@ public class JwtTokenGenerator implements TokenGenerator {
     private final JwtUtil jwtUtil;
 
     @Override
-    public Token generateToken(MemberId memberId, Grade grade) {
+    public TokenResponse generateToken(MemberId memberId, Grade grade) {
         return jwtUtil.generateToken(memberId, grade);
     }
 }

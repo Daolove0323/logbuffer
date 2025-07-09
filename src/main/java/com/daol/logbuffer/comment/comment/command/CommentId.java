@@ -1,4 +1,4 @@
-package com.daol.logbuffer.comment.command;
+package com.daol.logbuffer.comment.comment.command;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

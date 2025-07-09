@@ -1,20 +1,20 @@
-package com.daol.logbuffer.comment.ui;
+package com.daol.logbuffer.comment.comment.ui;
 
 import com.daol.logbuffer._common.api.ApiResponse;
 import com.daol.logbuffer._common.api.PageDefault;
 import com.daol.logbuffer._common.api.PageResponse;
 import com.daol.logbuffer._common.argresolver.Auth;
-import com.daol.logbuffer.comment.application.CommentCreationRequest;
-import com.daol.logbuffer.comment.application.CommentCreationResponse;
-import com.daol.logbuffer.comment.application.CommentCreationService;
-import com.daol.logbuffer.comment.application.CommentDeletionService;
-import com.daol.logbuffer.comment.application.CommentUpdateRequest;
-import com.daol.logbuffer.comment.application.CommentUpdateResponse;
-import com.daol.logbuffer.comment.application.CommentUpdateService;
-import com.daol.logbuffer.comment.command.CommentAuthorId;
-import com.daol.logbuffer.comment.command.CommentId;
-import com.daol.logbuffer.comment.query.CommentQueryService;
-import com.daol.logbuffer.comment.query.CommentResponse;
+import com.daol.logbuffer.comment.comment.application.CommentCreationRequest;
+import com.daol.logbuffer.comment.comment.application.CommentCreationResponse;
+import com.daol.logbuffer.comment.comment.application.CommentCreationService;
+import com.daol.logbuffer.comment.comment.application.CommentDeletionService;
+import com.daol.logbuffer.comment.comment.application.CommentUpdateRequest;
+import com.daol.logbuffer.comment.comment.application.CommentUpdateResponse;
+import com.daol.logbuffer.comment.comment.application.CommentUpdateService;
+import com.daol.logbuffer.comment.comment.command.CommentAuthorId;
+import com.daol.logbuffer.comment.comment.command.CommentId;
+import com.daol.logbuffer.comment.comment.query.CommentQueryService;
+import com.daol.logbuffer.comment.comment.query.CommentResponse;
 import com.daol.logbuffer.member.auth.AuthMember;
 import com.daol.logbuffer.member.common.Grade;
 import com.daol.logbuffer.post.command.PostId;
@@ -72,7 +72,7 @@ public class CommentController {
         @RequestBody @Valid CommentUpdateRequest commentReq
     ) {
         return ApiResponse.ok(
-            commentUpdateService.updateContent(new CommentAuthorId(member.memberId()), new CommentId(commentId), commentReq)
+            commentUpdateService.updateComment(new CommentAuthorId(member.memberId()), new CommentId(commentId), commentReq)
         );
     }
 

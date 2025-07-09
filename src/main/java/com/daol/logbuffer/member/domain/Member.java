@@ -1,7 +1,7 @@
 package com.daol.logbuffer.member.domain;
 
 import com.daol.logbuffer._common.exception.InvalidRequestException;
-import com.daol.logbuffer.member.auth.Token;
+import com.daol.logbuffer.member.auth.TokenResponse;
 import com.daol.logbuffer.member.common.Grade;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -37,7 +37,6 @@ public class Member {
     @Column(name = "grade")
     @Enumerated(EnumType.STRING)
     private Grade grade;
-
     // Todo: Oauth 추가에 따른 LoginType 고려
 
     @CreatedDate
@@ -57,7 +56,7 @@ public class Member {
         return new Member(email, name, encodedPassword);
     }
 
-    public Token generateToken(TokenGenerator tokenGenerator) {
+    public TokenResponse generateToken(TokenGenerator tokenGenerator) {
         return tokenGenerator.generateToken(this.getId(), this.grade);
     }
 

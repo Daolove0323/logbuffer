@@ -18,12 +18,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Token> signUp(@RequestBody @Valid SignUpRequest signUpReq) {
+    public ResponseEntity<TokenResponse> signUp(@RequestBody @Valid SignUpRequest signUpReq) {
         return ApiResponse.created(authService.signUp(signUpReq));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Token> login(@RequestBody @Valid LoginRequest loginReq) {
+    public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest loginReq) {
         return ApiResponse.ok(authService.login(loginReq));
     }
 

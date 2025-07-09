@@ -46,3 +46,5 @@ post:
 app:
   attribute:
     member: member
+  frontend-dev-url: http://localhost:5173
+  frontend-prod-url: https://logbuffer.vercel.app

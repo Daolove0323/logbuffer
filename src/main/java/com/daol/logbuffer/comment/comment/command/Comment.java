@@ -1,4 +1,4 @@
-package com.daol.logbuffer.comment.command;
+package com.daol.logbuffer.comment.comment.command;
 
 import com.daol.logbuffer._common.event.CommentCreatedEvent;
 import com.daol.logbuffer._common.event.Events;
@@ -72,11 +72,19 @@ public class Comment {
         this.content = content;
     }
 
-    public void hide() {
+    public void changeVisibility(boolean isHidden) {
+        if (isHidden) {
+            this.hide();
+        } else {
+            this.publish();
+        }
+    }
+
+    private void hide() {
         this.state = CommentState.HIDDEN;
     }
 
-    public void publish() {
+    private void publish() {
         this.state = CommentState.PUBLISHED;
     }
 

@@ -21,7 +21,7 @@ public class PostUpdateService {
         PostUpdateRequest postReq) {
         Post post = postRepository.findById(postId).orElseThrow();
         post.verifyAuthor(authorId);
-        post.updateDetails(postReq.title(), postReq.content(), new CategoryId(postReq.categoryId()),
+        post.updateDetails(postReq.title(), postReq.description(), postReq.content(), new CategoryId(postReq.categoryId()),
             postReq.hashtagIds().stream().map(HashtagId::new).toList(), postReq.state());
         return PostUpdateResponse.from(post);
     }

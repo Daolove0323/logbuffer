@@ -1,8 +1,9 @@
-package com.daol.logbuffer.comment.application;
+package com.daol.logbuffer.comment.comment.application;
 
-import com.daol.logbuffer.comment.command.Comment;
-import com.daol.logbuffer.comment.command.CommentAuthorId;
-import com.daol.logbuffer.comment.command.CommentRepository;
+import com.daol.logbuffer.comment.comment.command.Comment;
+import com.daol.logbuffer.comment.comment.command.CommentAuthorId;
+import com.daol.logbuffer.comment.comment.command.CommentRepository;
+import com.daol.logbuffer.comment.post.PostChecker;
 import com.daol.logbuffer.post.command.PostId;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentCreationService {
 
     private final CommentRepository commentRepository;
+    private final PostChecker postChecker;
 
-    // Todo: PostId에 해당하는 Post가 존재하는지 확인하는 Policy 추가
     @Transactional
     public CommentCreationResponse createComment(CommentAuthorId authorId, PostId postId, CommentCreationRequest commentReq) {
+        postChecker.verifyPostExists(postId);
         Comment comment = Comment.create(commentReq.content(), postId, authorId, commentReq.isHidden());
         commentRepository.save(comment);
         return CommentCreationResponse.from(comment);

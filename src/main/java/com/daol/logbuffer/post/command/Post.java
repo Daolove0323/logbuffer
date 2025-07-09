@@ -33,6 +33,9 @@ public class Post {
     @Column(name = "title")
     private String title;
 
+    @Column(name = "description")
+    private String description;
+
     @Embedded
     private PostContent content;
 
@@ -63,10 +66,11 @@ public class Post {
         this.id = PostId.generate();
     }
 
-    private Post(String title, PostContent content, PostAuthorId postAuthorId,
+    private Post(String title, String description, PostContent content, PostAuthorId postAuthorId,
         CategoryId categoryId, Set<HashtagId> hashtagIds, PostState state) {
         this.id = PostId.generate();
         this.title = title;
+        this.description = description;
         this.content = content;
         this.postAuthorId = postAuthorId;
         this.categoryId = categoryId;
@@ -74,10 +78,11 @@ public class Post {
         this.state = state;
     }
 
-    public static Post create(String title, String content, PostAuthorId authorId,
+    public static Post create(String title, String description, String content, PostAuthorId authorId,
         CategoryId categoryId, List<HashtagId> hashtagIds, PostState state) {
         return new Post(
             title,
+            description,
             new PostContent(content),
             authorId,
             categoryId,
@@ -86,10 +91,11 @@ public class Post {
         );
     }
 
-    public void updateDetails(String title, String content, CategoryId categoryId,
+    public void updateDetails(String title, String description, String content, CategoryId categoryId,
         List<HashtagId> hashtagIds,
         PostState state) {
         changeTitle(title);
+        changeDescription(description);
         changeContent(content);
         changeCategory(categoryId);
         changeHashtags(hashtagIds);
@@ -98,6 +104,10 @@ public class Post {
 
     public void changeTitle(String title) {
         this.title = title;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
     }
 
     public void changeContent(String content) {

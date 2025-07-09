@@ -22,14 +22,14 @@ public class AuthService {
     private final TokenGenerator tokenGenerator;
 
     @Transactional
-    public Token signUp(SignUpRequest signUpReq) {
+    public TokenResponse signUp(SignUpRequest signUpReq) {
         Member member = memberRepository.save(
             Member.createNormalMember(signUpReq.email(), signUpReq.name(), signUpReq.rawPassword(), passwordHasher));
         return member.generateToken(tokenGenerator);
     }
 
     @Transactional(readOnly = true)
-    public Token login(LoginRequest loginReq) {
+    public TokenResponse login(LoginRequest loginReq) {
         Member member = memberRepository.findByEmail(loginReq.email())
             .orElseThrow(() -> new EntityNotFoundException("ID에 해당하는 멤버를 찾을 수 없습니다."));
         member.validatePassword(loginReq.rawPassword(), passwordHasher);

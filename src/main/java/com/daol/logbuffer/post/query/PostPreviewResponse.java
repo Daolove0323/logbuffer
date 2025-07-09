@@ -10,7 +10,7 @@ import java.util.UUID;
 public record PostPreviewResponse(
     UUID postId,
     String title,
-    String contentPreview,
+    String description,
     PostMemberResponse author,
     PostState state,
     String thumbnailImageUrl,

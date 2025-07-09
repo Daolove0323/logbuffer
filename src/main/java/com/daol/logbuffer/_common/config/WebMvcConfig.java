@@ -5,6 +5,7 @@ import com.daol.logbuffer._common.interceptor.AuthInterceptor;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -17,16 +18,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class WebMvcConfig implements WebMvcConfigurer {
 
+    @Value("${app.frontend-dev-url}")
+    private String FRONTEND_DEV_URL;
+
+    @Value("${app.frontend-prod-url}")
+    private String FRONTEND_PROD_URL;
+
     private final AuthInterceptor authInterceptor;
     private final LoginMemberArgumentResolver loginMemberArgumentResolver;
 
-    // Todo: 배포 후 CORS 설정
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("*")
-            .allowedMethods("*")
-            .allowedHeaders("*");
+            .allowedOrigins(FRONTEND_DEV_URL, FRONTEND_PROD_URL)
+            .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 
     @Override

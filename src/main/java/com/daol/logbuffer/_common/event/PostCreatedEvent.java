@@ -11,5 +11,7 @@ import lombok.Getter;
 public class PostCreatedEvent extends Event {
 
     private final PostId postId;
+    private final List<String> postImageUrls;
+    private final String thumbnailImageUrl;
     private final List<HashtagId> hashtagIds;
 }

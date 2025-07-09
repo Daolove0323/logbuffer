@@ -1,6 +1,6 @@
-package com.daol.logbuffer.comment.application;
+package com.daol.logbuffer.comment.comment.application;
 
-import com.daol.logbuffer.comment.command.Comment;
+import com.daol.logbuffer.comment.comment.command.Comment;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
