@@ -1,7 +1,7 @@
 package com.daol.logbuffer.member.infra;
 
 import com.daol.logbuffer._common.exception.UnauthenticatedException;
-import com.daol.logbuffer.member.auth.AuthMember;
+import com.daol.logbuffer.member.auth.CurrentUser;
 import com.daol.logbuffer.member.auth.TokenResponse;
 import com.daol.logbuffer.member.common.Grade;
 import com.daol.logbuffer.member.domain.MemberId;
@@ -41,7 +41,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public AuthMember parseTokenToMember(TokenResponse tokenResponse) {
+    public CurrentUser parseTokenToMember(TokenResponse tokenResponse) {
         JwtParser parser = Jwts.parser()
             .verifyWith(getSigningKey())
             .json(new JacksonDeserializer<>(objectMapper))
@@ -52,7 +52,7 @@ public class JwtUtil {
         }
         String gradeString = claims.get("grade", String.class);
         Grade grade = Grade.valueOf(gradeString);
-        return new AuthMember(new MemberId(claims.getSubject()), grade);
+        return new CurrentUser(new MemberId(claims.getSubject()), grade);
     }
 
     public TokenResponse generateToken(MemberId memberId, Grade grade) {

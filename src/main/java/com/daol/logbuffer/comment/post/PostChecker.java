@@ -6,6 +6,7 @@ import com.daol.logbuffer.post.command.PostRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -13,6 +14,7 @@ public class PostChecker {
 
     private final PostRepository postRepository;
 
+    @Transactional(readOnly = true)
     public void verifyPostExists(PostId postId) {
         if (!postRepository.existsById(postId)) {
             throw new EntityNotFoundException("ID에 해당하는 게시글을 찾을 수 없습니다.");

@@ -11,11 +11,10 @@ import com.daol.logbuffer.comment.comment.application.CommentDeletionService;
 import com.daol.logbuffer.comment.comment.application.CommentUpdateRequest;
 import com.daol.logbuffer.comment.comment.application.CommentUpdateResponse;
 import com.daol.logbuffer.comment.comment.application.CommentUpdateService;
-import com.daol.logbuffer.comment.comment.command.CommentAuthorId;
 import com.daol.logbuffer.comment.comment.command.CommentId;
 import com.daol.logbuffer.comment.comment.query.CommentQueryService;
 import com.daol.logbuffer.comment.comment.query.CommentResponse;
-import com.daol.logbuffer.member.auth.AuthMember;
+import com.daol.logbuffer.member.auth.CurrentUser;
 import com.daol.logbuffer.member.common.Grade;
 import com.daol.logbuffer.post.command.PostId;
 import jakarta.validation.Valid;
@@ -57,31 +56,31 @@ public class CommentController {
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentCreationResponse> createComment(
         @PathVariable UUID postId,
-        @Auth(Grade.NORMAL) AuthMember member,
+        @Auth(Grade.GUEST) CurrentUser user,
         @RequestBody @Valid CommentCreationRequest commentReq
     ) {
         return ApiResponse.created(
-            commentCreationService.createComment(new CommentAuthorId(member.memberId()), new PostId(postId), commentReq)
+            commentCreationService.createComment(user, new PostId(postId), commentReq)
         );
     }
 
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<CommentUpdateResponse> updateComment(
         @PathVariable UUID commentId,
-        @Auth(Grade.NORMAL) AuthMember member,
+        @Auth(Grade.GUEST) CurrentUser user,
         @RequestBody @Valid CommentUpdateRequest commentReq
     ) {
         return ApiResponse.ok(
-            commentUpdateService.updateComment(new CommentAuthorId(member.memberId()), new CommentId(commentId), commentReq)
+            commentUpdateService.updateComment(user, new CommentId(commentId), commentReq)
         );
     }
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(
-        @Auth(Grade.NORMAL) AuthMember member,
+        @Auth(Grade.GUEST) CurrentUser user,
         @PathVariable UUID commentId
     ) {
-        commentDeletionService.deleteComment(new CommentAuthorId(member.memberId()), new CommentId(commentId));
+        commentDeletionService.deleteComment(user, new CommentId(commentId));
         return ApiResponse.noContent();
     }
 }

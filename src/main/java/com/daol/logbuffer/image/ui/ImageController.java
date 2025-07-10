@@ -6,7 +6,7 @@ import com.daol.logbuffer.image.application.ImageResponse;
 import com.daol.logbuffer.image.application.ImageServiceFactory;
 import com.daol.logbuffer.image.common.ImageType;
 import com.daol.logbuffer.image.domain.UploaderId;
-import com.daol.logbuffer.member.auth.AuthMember;
+import com.daol.logbuffer.member.auth.CurrentUser;
 import com.daol.logbuffer.member.common.Grade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -38,8 +38,8 @@ public class ImageController {
     public ResponseEntity<ImageResponse> uploadImage(
         @RequestParam MultipartFile image,
         @PathVariable String type,
-        @Auth(Grade.NORMAL) AuthMember member
+        @Auth(Grade.NORMAL) CurrentUser member
     ) {
-        return ApiResponse.ok(imageServiceFactory.get(ImageType.valueOf(type)).createImage(new UploaderId(member.memberId()), image));
+        return ApiResponse.ok(imageServiceFactory.get(ImageType.valueOf(type)).createImage(new UploaderId(member.getMemberId()), image));
     }
 }

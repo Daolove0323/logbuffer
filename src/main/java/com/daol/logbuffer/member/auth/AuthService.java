@@ -37,18 +37,18 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public void validateMemberExists(AuthMember member) {
-        if (member.memberId() == null) {
+    public void validateMemberExists(CurrentUser member) {
+        if (member.getMemberId() == null) {
             throw new UnauthenticatedException("토큰에서 ID 정보를 찾을 수 없습니다.");
         }
         if (member.grade() == null) {
             throw new UnauthenticatedException("토큰에서 등급 정보를 찾을 수 없습니다.");
         }
-        memberRepository.findById(member.memberId()).
+        memberRepository.findById(member.getMemberId()).
             orElseThrow(() -> new UnauthenticatedException("ID에 해당하는 멤버를 찾을 수 없습니다."));
     }
 
-    public void validateAuthorization(AuthMember member, Grade requiredGrade) {
+    public void validateAuthorization(CurrentUser member, Grade requiredGrade) {
         if (!member.hasRequiredGrade(requiredGrade)) {
             throw new UnauthorizedException("사용자의 권한이 부족합니다.");
         }

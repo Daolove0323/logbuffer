@@ -1,7 +1,5 @@
 package com.daol.logbuffer.comment.comment.command;
 
-import com.daol.logbuffer._common.event.CommentCreatedEvent;
-import com.daol.logbuffer._common.event.Events;
 import com.daol.logbuffer._common.exception.EntityNotFoundException;
 import com.daol.logbuffer.post.command.PostId;
 import jakarta.persistence.Column;
@@ -34,6 +32,9 @@ public class Comment {
     @Embedded
     private CommentAuthorId authorId;
 
+    @Embedded
+    private GuestCommentAuthorId guestAuthorId;
+
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
     private CommentState state;
@@ -57,14 +58,30 @@ public class Comment {
         this.authorId = authorId;
     }
 
-    public static Comment create(String content, PostId postId, CommentAuthorId authorId, boolean isHidden) {
+    private Comment(String content, PostId postId, GuestCommentAuthorId guestAuthorId) {
+        this.id = CommentId.generate();
+        this.content = content;
+        this.postId = postId;
+        this.guestAuthorId = guestAuthorId;
+    }
+
+    public static Comment createByGuest(String content, PostId postId, GuestCommentAuthorId guestAuthorId, boolean isHidden) {
+        Comment comment = new Comment(content, postId, guestAuthorId);
+        if (isHidden) {
+            comment.hide();
+        } else {
+            comment.publish();
+        }
+        return comment;
+    }
+
+    public static Comment createByMember(String content, PostId postId, CommentAuthorId authorId, boolean isHidden) {
         Comment comment = new Comment(content, postId, authorId);
         if (isHidden) {
             comment.hide();
         } else {
             comment.publish();
         }
-        Events.raise(new CommentCreatedEvent(postId));
         return comment;
     }
 

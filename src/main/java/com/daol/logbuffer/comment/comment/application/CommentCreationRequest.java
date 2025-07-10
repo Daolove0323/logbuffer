@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.Length;
 public record CommentCreationRequest(
 
     @NotNull(message = "댓글 내용은 필수입니다.")
-    @Length(min = 10, max = 500, message = "댓글은 10자 이상 500자 이하로 작성해야 합니다.")
+    @Length(min = 1, max = 500, message = "댓글은 1자 이상 500자 이하로 작성해야 합니다.")
     String content,
 
     @NotNull(message = "숨김 여부는 필수입니다.")

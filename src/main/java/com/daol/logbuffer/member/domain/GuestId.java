@@ -12,20 +12,20 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = false)
-public class MemberId extends UserId {
+public class GuestId extends UserId {
 
-    @Column(name = "member_id")
+    @Column(name = "guest_id")
     private UUID value;
 
-    public MemberId(UUID value) {
+    public GuestId(UUID value) {
         this.value = value;
     }
 
-    public MemberId(String value) {
+    public GuestId(String value) {
         this.value = UUID.fromString(value);
     }
 
-    public static MemberId generate() {
-        return new MemberId(UUID.randomUUID());
+    public static GuestId generate() {
+        return new GuestId(UUID.randomUUID());
     }
 }

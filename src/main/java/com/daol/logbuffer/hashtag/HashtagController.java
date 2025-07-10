@@ -3,7 +3,7 @@ package com.daol.logbuffer.hashtag;
 import com.daol.logbuffer._common.api.ApiResponse;
 import com.daol.logbuffer._common.api.ListResponse;
 import com.daol.logbuffer._common.argresolver.Auth;
-import com.daol.logbuffer.member.auth.AuthMember;
+import com.daol.logbuffer.member.auth.CurrentUser;
 import com.daol.logbuffer.member.common.Grade;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -40,7 +40,7 @@ public class HashtagController {
     @DeleteMapping("/{hashtagId}")
     public ResponseEntity<Void> deleteHashtag(
         @PathVariable UUID hashtagId,
-        @Auth(Grade.ADMIN) AuthMember member
+        @Auth(Grade.ADMIN) CurrentUser member
     ) {
         hashtagService.deleteHashtag(new HashtagId(hashtagId));
         return ApiResponse.noContent();

@@ -2,7 +2,7 @@ package com.daol.logbuffer.postlike;
 
 import com.daol.logbuffer._common.api.ApiResponse;
 import com.daol.logbuffer._common.argresolver.Auth;
-import com.daol.logbuffer.member.auth.AuthMember;
+import com.daol.logbuffer.member.auth.CurrentUser;
 import com.daol.logbuffer.member.common.Grade;
 import com.daol.logbuffer.post.command.PostId;
 import java.util.UUID;
@@ -26,18 +26,18 @@ public class PostLikeController {
     @GetMapping("/{postId}/likes")
     public ResponseEntity<Boolean> isLiked(
         @PathVariable UUID postId,
-        @Auth(Grade.GUEST) AuthMember member
+        @Auth(Grade.GUEST) CurrentUser member
     ) {
         return ApiResponse.ok(likeQueryService.getLike(
-            new PostId(postId), new PostLikerId(member.memberId())));
+            new PostId(postId), new PostLikerId(member.getMemberId())));
     }
 
     @PostMapping("/{postId}/likes")
     public ResponseEntity<Void> toggleLike(
         @PathVariable UUID postId,
-        @Auth(Grade.GUEST) AuthMember member
+        @Auth(Grade.GUEST) CurrentUser member
     ) {
-        likeToggleService.toggleLike(new PostId(postId), new PostLikerId(member.memberId()));
+        likeToggleService.toggleLike(new PostId(postId), new PostLikerId(member.getMemberId()));
         return ApiResponse.noContent();
     }
 }

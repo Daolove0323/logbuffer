@@ -6,7 +6,7 @@ import com.daol.logbuffer._common.api.PageResponse;
 import com.daol.logbuffer._common.argresolver.Auth;
 import com.daol.logbuffer.category.CategoryId;
 import com.daol.logbuffer.hashtag.HashtagId;
-import com.daol.logbuffer.member.auth.AuthMember;
+import com.daol.logbuffer.member.auth.CurrentUser;
 import com.daol.logbuffer.member.common.Grade;
 import com.daol.logbuffer.post.application.PostCreationRequest;
 import com.daol.logbuffer.post.application.PostCreationResponse;
@@ -71,29 +71,29 @@ public class PostController {
     @PostMapping
     public ResponseEntity<PostCreationResponse> createPost(
         @RequestBody PostCreationRequest postCreateReq,
-        @Auth(value = Grade.ADMIN) AuthMember member
+        @Auth(value = Grade.ADMIN) CurrentUser member
     ) {
         return ApiResponse.created(
-            postCreationService.createPost(new PostAuthorId(member.memberId()), postCreateReq));
+            postCreationService.createPost(new PostAuthorId(member.getMemberId()), postCreateReq));
     }
 
     @PutMapping("/{postId}")
     public ResponseEntity<PostUpdateResponse> updatePost(
         @PathVariable UUID postId,
         @RequestBody PostUpdateRequest postUpdateReq,
-        @Auth(value = Grade.ADMIN) AuthMember member
+        @Auth(value = Grade.ADMIN) CurrentUser member
     ) {
         return ApiResponse.ok(
             postUpdateService.updatePost(
-                new PostAuthorId(member.memberId()), new PostId(postId), postUpdateReq));
+                new PostAuthorId(member.getMemberId()), new PostId(postId), postUpdateReq));
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(
         @PathVariable UUID postId,
-        @Auth(value = Grade.ADMIN) AuthMember member
+        @Auth(value = Grade.ADMIN) CurrentUser member
     ) {
-        postDeletionService.delete(new PostAuthorId(member.memberId()), new PostId(postId));
+        postDeletionService.delete(new PostAuthorId(member.getMemberId()), new PostId(postId));
         return ApiResponse.noContent();
     }
 }

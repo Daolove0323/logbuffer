@@ -3,7 +3,7 @@ package com.daol.logbuffer.category;
 import com.daol.logbuffer._common.api.ApiResponse;
 import com.daol.logbuffer._common.api.ListResponse;
 import com.daol.logbuffer._common.argresolver.Auth;
-import com.daol.logbuffer.member.auth.AuthMember;
+import com.daol.logbuffer.member.auth.CurrentUser;
 import com.daol.logbuffer.member.common.Grade;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -33,7 +33,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(
         @RequestBody @Valid CategoryRequest categoryReq,
-        @Auth(Grade.ADMIN) AuthMember member
+        @Auth(Grade.ADMIN) CurrentUser member
     ) {
         return ApiResponse.created(categoryService.createCategory(categoryReq));
     }
@@ -41,7 +41,7 @@ public class CategoryController {
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Void> deleteCategory(
         @PathVariable UUID categoryId,
-        @Auth(Grade.ADMIN) AuthMember member
+        @Auth(Grade.ADMIN) CurrentUser member
     ) {
         categoryService.deleteCategory(new CategoryId(categoryId));
         return ApiResponse.noContent();
