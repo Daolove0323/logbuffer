@@ -47,10 +47,11 @@ public class CommentController {
     public ResponseEntity<PageResponse<CommentResponse>> getComments(
         @RequestParam(defaultValue = PageDefault.DEFAULT_PAGE) Integer page,
         @RequestParam(defaultValue = PageDefault.COMMENT_PAGE_SIZE) Integer size,
-        @PathVariable UUID postId
+        @PathVariable UUID postId,
+        @Auth(Grade.GUEST) CurrentUser user
     ) {
         return ApiResponse.ok(
-            commentQueryService.getComments(new PostId(postId), PageRequest.of(page, size)));
+            commentQueryService.getComments(user, new PostId(postId), PageRequest.of(page, size)));
     }
 
     @PostMapping("/posts/{postId}/comments")

@@ -62,7 +62,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             request.setAttribute(MEMBER_ATTRIBUTE, member);
             return true;
         }
-
+        
         if (!auth.value().equals(Grade.GUEST)) {
             return false;
         }

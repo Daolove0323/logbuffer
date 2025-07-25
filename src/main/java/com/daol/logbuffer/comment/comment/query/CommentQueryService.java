@@ -1,6 +1,7 @@
 package com.daol.logbuffer.comment.comment.query;
 
 import com.daol.logbuffer._common.api.PageResponse;
+import com.daol.logbuffer.member.auth.CurrentUser;
 import com.daol.logbuffer.post.command.PostId;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,13 @@ public class CommentQueryService {
 
     private final CommentDataRepository commentRepository;
 
-    public PageResponse<CommentResponse> getComments(PostId postId, Pageable pageable) {
-        Page<CommentResponse> comments = commentRepository.findCommentsForAdmin(postId, pageable);
-        return PageResponse.of(comments.toList(), comments.getNumber(), comments.getTotalPages());
+    public PageResponse<CommentResponse> getComments(CurrentUser user, PostId postId, Pageable pageable) {
+        Page<CommentResponse> comments;
+        if (user.isAdmin()) {
+            comments = commentRepository.findCommentsForAdmin(postId, pageable);
+        } else {
+            comments = commentRepository.findCommentsForMember(postId, pageable);
+        }
+        return PageResponse.of(comments);
     }
 }

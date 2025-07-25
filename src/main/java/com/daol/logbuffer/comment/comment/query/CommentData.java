@@ -1,6 +1,6 @@
 package com.daol.logbuffer.comment.comment.query;
 
-import com.daol.logbuffer.comment.comment.command.CommentAuthorId;
+import com.daol.logbuffer.comment.comment.command.CommentAuthor;
 import com.daol.logbuffer.comment.comment.command.CommentId;
 import com.daol.logbuffer.comment.comment.command.CommentState;
 import com.daol.logbuffer.post.command.PostId;
@@ -14,8 +14,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -34,17 +32,15 @@ public class CommentData {
     private PostId postId;
 
     @Embedded
-    private CommentAuthorId authorId;
+    private CommentAuthor author;
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
     private CommentState state;
 
     @Column(name = "created_date")
-    @CreatedDate
     private LocalDateTime createdDate;
 
     @Column(name = "modified_date")
-    @LastModifiedDate
     private LocalDateTime modifiedDate;
 }

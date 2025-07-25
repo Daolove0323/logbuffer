@@ -29,35 +29,6 @@ public class PostQueryService {
     ) {
         Page<PostPreviewResponse> posts = postRepository.findPostsByFilter(
             pageable, categoryId.orElse(null), hashtagId.orElse(null), keyword.orElse(null));
-        return PageResponse.of(posts.getContent(), posts.getNumber(), posts.getTotalPages());
-    }
-
-    @Transactional(readOnly = true)
-    public PageResponse<PostPreviewResponse> getAllPostsSortedByNewest(Pageable pageable) {
-        Page<PostPreviewResponse> posts = postRepository.findPublishedPosts(pageable);
-        return PageResponse.of(posts.getContent(), posts.getNumber(), posts.getTotalPages());
-    }
-
-    @Transactional(readOnly = true)
-    public PageResponse<PostPreviewResponse> getPostsByCategory(CategoryId categoryId,
-        Pageable pageable) {
-        Page<PostPreviewResponse> posts = postRepository.findPublishedPostsByCategory(
-            categoryId, pageable);
-        return PageResponse.of(posts.getContent(), posts.getNumber(), posts.getTotalPages());
-    }
-
-    @Transactional(readOnly = true)
-    public PageResponse<PostPreviewResponse> getPostsByHashtag(HashtagId hashtagId,
-        Pageable pageable) {
-        Page<PostPreviewResponse> posts = postRepository.findPublishedPostsByHashtag(
-            hashtagId, pageable);
-        return PageResponse.of(posts.getContent(), posts.getNumber(), posts.getTotalPages());
-    }
-
-    @Transactional(readOnly = true)
-    public PageResponse<PostPreviewResponse> getPostsByTitleContaining(String title,
-        Pageable pageable) {
-        Page<PostPreviewResponse> posts = postRepository.findPublishedPostsByTitleContaining(title, pageable);
-        return PageResponse.of(posts.getContent(), posts.getNumber(), posts.getTotalPages());
+        return PageResponse.of(posts);
     }
 }

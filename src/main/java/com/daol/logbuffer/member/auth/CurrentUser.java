@@ -16,6 +16,14 @@ public record CurrentUser(UserId userId, Grade grade) {
         return this.grade.equals(Grade.GUEST);
     }
 
+    public boolean isMember() {
+        return this.grade.equals(Grade.NORMAL);
+    }
+
+    public boolean isAdmin() {
+        return this.grade.equals(Grade.ADMIN);
+    }
+
     public MemberId getMemberId() {
         if (userId instanceof MemberId memberId) {
             return memberId;

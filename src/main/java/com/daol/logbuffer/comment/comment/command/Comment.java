@@ -30,10 +30,7 @@ public class Comment {
     private PostId postId;
 
     @Embedded
-    private CommentAuthorId authorId;
-
-    @Embedded
-    private GuestCommentAuthorId guestAuthorId;
+    private CommentAuthor author;
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
@@ -51,18 +48,18 @@ public class Comment {
         this.id = CommentId.generate();
     }
 
-    private Comment(String content, PostId postId, CommentAuthorId authorId) {
+    private Comment(String content, PostId postId, MemberCommentAuthorId authorId) {
         this.id = CommentId.generate();
         this.content = content;
         this.postId = postId;
-        this.authorId = authorId;
+        this.author = new CommentAuthor(authorId);
     }
 
-    private Comment(String content, PostId postId, GuestCommentAuthorId guestAuthorId) {
+    private Comment(String content, PostId postId, GuestCommentAuthorId authorId) {
         this.id = CommentId.generate();
         this.content = content;
         this.postId = postId;
-        this.guestAuthorId = guestAuthorId;
+        this.author = new CommentAuthor(authorId);
     }
 
     public static Comment createByGuest(String content, PostId postId, GuestCommentAuthorId guestAuthorId, boolean isHidden) {
@@ -75,7 +72,7 @@ public class Comment {
         return comment;
     }
 
-    public static Comment createByMember(String content, PostId postId, CommentAuthorId authorId, boolean isHidden) {
+    public static Comment createByMember(String content, PostId postId, MemberCommentAuthorId authorId, boolean isHidden) {
         Comment comment = new Comment(content, postId, authorId);
         if (isHidden) {
             comment.hide();
@@ -105,12 +102,12 @@ public class Comment {
         this.state = CommentState.PUBLISHED;
     }
 
-    public void verifyAuthor(CommentAuthorId authorId) {
+    public void verifyAuthor(MemberCommentAuthorId authorId) {
         if (authorId == null) {
             throw new EntityNotFoundException("댓글 작성자 ID가 존재하지 않습니다.");
         }
-        if (!this.getAuthorId().equals(authorId)) {
-            throw new EntityNotFoundException("댓글 작성자가 일치하지 않습니다.");
-        }
+//        if (!this.getAuthorId().equals(authorId)) {
+//            throw new EntityNotFoundException("댓글 작성자가 일치하지 않습니다.");
+//        }
     }
 }

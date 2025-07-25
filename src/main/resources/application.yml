@@ -47,4 +47,8 @@ app:
   attribute:
     member: member
   frontend-dev-url: http://localhost:5173
-  frontend-prod-url: https://logbuffer.vercel.app
+  frontend-prod-url: ${FRONTEND_PROD_URL}
+
+logging:
+  level:
+    org.springframework.web.servlet.PageNotFound: ERROR

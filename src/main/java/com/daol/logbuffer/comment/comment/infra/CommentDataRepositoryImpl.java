@@ -12,9 +12,11 @@ import com.daol.logbuffer.comment.comment.query.QCommentResponse;
 import com.daol.logbuffer.member.query.QCommentMemberResponse;
 import com.daol.logbuffer.post.command.PostId;
 import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,13 +24,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-// Todo: 공통로직 분리 및 리팩토링
 @Repository
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentDataRepositoryImpl implements CommentDataRepository {
 
     private final JPAQueryFactory queryFactory;
     private final ImageConfig imageConfig;
+    private static final String HIDDEN_COMMENT_MESSAGE = "이 댓글은 숨겨진 댓글입니다.";
 
     @Override
     public Page<CommentResponse> findCommentsForAdmin(PostId postId, Pageable pageable) {
@@ -38,13 +40,14 @@ public class CommentDataRepositoryImpl implements CommentDataRepository {
                 commentData.content,
                 commentData.state,
                 new QCommentMemberResponse(
-                    commentData.authorId.value,
+                    authorIdExpr(),
                     member.name,
-                    createProfileImageUrlExpression()),
+                    authorTypeExpr(),
+                    profileImageUrlExpr()),
                 commentData.createdDate,
                 commentData.modifiedDate))
             .from(commentData)
-            .leftJoin(member).on(commentData.authorId.value.eq(member.id.value))
+            .leftJoin(member).on(commentData.author.memberAuthorId.value.eq(member.id.value))
             .leftJoin(profileImage).on(member.id.eq(profileImage.memberId))
             .where(commentData.postId.eq(postId))
             .orderBy(commentData.createdDate.asc())
@@ -54,7 +57,7 @@ public class CommentDataRepositoryImpl implements CommentDataRepository {
             .from(commentData)
             .where((commentData.postId.eq(postId)))
             .fetchOne();
-        return new PageImpl<>(res, pageable, res.size());
+        return new PageImpl<>(res, pageable, total);
     }
 
     @Override
@@ -62,18 +65,17 @@ public class CommentDataRepositoryImpl implements CommentDataRepository {
         List<CommentResponse> res = queryFactory.
             select(new QCommentResponse(
                 commentData.id.value,
-                Expressions.cases()
-                    .when(commentData.state.eq(CommentState.PUBLISHED)).then(commentData.content)
-                    .otherwise("이 댓글은 숨겨진 댓글입니다."),
+                visibleContentExpr(),
                 commentData.state,
                 new QCommentMemberResponse(
-                    commentData.authorId.value,
+                    authorIdExpr(),
                     member.name,
-                    createProfileImageUrlExpression()),
+                    authorTypeExpr(),
+                    profileImageUrlExpr()),
                 commentData.createdDate,
                 commentData.modifiedDate))
             .from(commentData)
-            .leftJoin(member).on(commentData.authorId.value.eq(member.id.value))
+            .leftJoin(member).on(commentData.author.memberAuthorId.value.eq(member.id.value))
             .leftJoin(profileImage).on(member.id.eq(profileImage.memberId))
             .where(commentData.state.eq(CommentState.PUBLISHED)
                 .and(commentData.postId.eq(postId)))
@@ -84,10 +86,10 @@ public class CommentDataRepositoryImpl implements CommentDataRepository {
             .from(commentData)
             .where((commentData.postId.eq(postId)))
             .fetchOne();
-        return new PageImpl<>(res, pageable, res.size());
+        return new PageImpl<>(res, pageable, total);
     }
 
-    private Expression<String> createProfileImageUrlExpression() {
+    private Expression<String> profileImageUrlExpr() {
         return Expressions.cases()
             .when(profileImage.fileName.isNull())
             .then(Expressions.nullExpression(String.class))
@@ -97,5 +99,25 @@ public class CommentDataRepositoryImpl implements CommentDataRepository {
                     imageConfig.getProfileImageDirectory(),
                     profileImage.fileName)
             );
+    }
+
+    private Expression<UUID> authorIdExpr() {
+        return new CaseBuilder()
+            .when(commentData.author.memberAuthorId.value.isNotNull())
+            .then(commentData.author.memberAuthorId.value)
+            .otherwise(commentData.author.guestAuthorId.value);
+    }
+
+    private Expression<String> authorTypeExpr() {
+        return new CaseBuilder()
+            .when(commentData.author.memberAuthorId.value.isNotNull()).then("member")
+            .otherwise("guest");
+    }
+
+    private Expression<String> visibleContentExpr() {
+        return new CaseBuilder()
+            .when(commentData.state.eq(CommentState.PUBLISHED))
+            .then(commentData.content)
+            .otherwise(HIDDEN_COMMENT_MESSAGE);
     }
 }

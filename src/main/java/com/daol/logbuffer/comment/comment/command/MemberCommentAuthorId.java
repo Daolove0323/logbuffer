@@ -1,6 +1,6 @@
 package com.daol.logbuffer.comment.comment.command;
 
-import com.daol.logbuffer.member.domain.GuestId;
+import com.daol.logbuffer.member.domain.MemberId;
 import jakarta.persistence.Embeddable;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -12,19 +12,19 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = false)
-public class GuestCommentAuthorId extends CommentAuthorId {
+public class MemberCommentAuthorId extends CommentAuthorId {
 
     private UUID value;
 
-    public GuestCommentAuthorId(UUID value) {
+    public MemberCommentAuthorId(UUID value) {
         this.value = value;
     }
 
-    public GuestCommentAuthorId(GuestId guestId) {
-        this.value = guestId.getValue();
+    public MemberCommentAuthorId(MemberId memberId) {
+        this.value = memberId.getValue();
     }
 
-    public static GuestCommentAuthorId generate() {
-        return new GuestCommentAuthorId(UUID.randomUUID());
+    public static MemberCommentAuthorId generate() {
+        return new MemberCommentAuthorId(UUID.randomUUID());
     }
 }

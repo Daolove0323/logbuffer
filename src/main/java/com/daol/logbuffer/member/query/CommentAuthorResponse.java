@@ -3,7 +3,7 @@ package com.daol.logbuffer.member.query;
 import com.querydsl.core.annotations.QueryProjection;
 import java.util.UUID;
 
-public record CommentMemberResponse(
+public record CommentAuthorResponse(
     UUID authorId,
     String name,
     String authorType,
@@ -11,6 +11,6 @@ public record CommentMemberResponse(
 ) {
 
     @QueryProjection
-    public CommentMemberResponse {
+    public CommentAuthorResponse {
     }
 }

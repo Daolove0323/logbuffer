@@ -11,7 +11,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<FailResponse> handleValidationException(MethodArgumentNotValidException e) {
         String errorMessage = e.getBindingResult().getFieldError().getDefaultMessage();
-        return ApiResponse.error(ErrorCode.ARGUMNET_NOT_VALID, errorMessage);
+        return ApiResponse.error(ErrorCode.ARGUMENT_NOT_VALID, errorMessage);
     }
 
     @ExceptionHandler(BusinessException.class)

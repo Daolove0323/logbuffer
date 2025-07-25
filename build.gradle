@@ -51,6 +51,9 @@ dependencies {
     annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
     annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 
+    // jackson
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
     // junit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
