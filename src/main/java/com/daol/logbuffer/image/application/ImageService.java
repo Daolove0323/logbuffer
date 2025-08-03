@@ -26,7 +26,7 @@ public abstract class ImageService<T extends Image> {
     public byte[] readImage(String fileName) {
         return fileStorage.readFile(imagePathService.getImagePath(getImageType()), fileName);
     }
-
+    
     @Transactional
     public ImageResponse createImage(UploaderId uploaderId, MultipartFile file) {
         T image = getRepository().save(createImageEntity(uploaderId));

@@ -21,6 +21,12 @@ public class PostThumbnailImageService extends ImageService<PostThumbnailImage> 
         this.imageRepository = imageRepository;
     }
 
+    @Transactional(readOnly = true)
+    public String findFileNameByPostId(PostId postId) {
+        return imageRepository.findByPostId(postId).map(PostThumbnailImage::getFileName)
+            .orElseThrow(() -> new EntityNotFoundException("해당 PostId에 대한 이미지 파일명을 찾을 수 없습니다."));
+    }
+
     @Override
     @Transactional
     public void setImageReference(String fileName, Object id) {

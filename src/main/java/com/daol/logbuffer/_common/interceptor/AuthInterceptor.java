@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+
 @Component
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuthInterceptor implements HandlerInterceptor {
@@ -62,7 +63,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             request.setAttribute(MEMBER_ATTRIBUTE, member);
             return true;
         }
-        
+
         if (!auth.value().equals(Grade.GUEST)) {
             return false;
         }

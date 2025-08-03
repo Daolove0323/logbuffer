@@ -1,6 +1,7 @@
 package com.daol.logbuffer.image.domain;
 
 import com.daol.logbuffer.member.domain.MemberId;
+import com.daol.logbuffer.post.command.PostAuthorId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.util.UUID;
@@ -28,5 +29,9 @@ public class UploaderId {
 
     public static UploaderId generate() {
         return new UploaderId(UUID.randomUUID());
+    }
+
+    public static UploaderId from(PostAuthorId authorId) {
+        return new UploaderId(authorId.getValue());
     }
 }

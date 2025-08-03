@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -31,7 +32,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
             .allowedOrigins(FRONTEND_DEV_URL, FRONTEND_PROD_URL)
-            .allowedMethods("GET", "POST", "PUT", "DELETE");
+            .allowedMethods(
+                HttpMethod.GET.name(),
+                HttpMethod.PATCH.name(),
+                HttpMethod.OPTIONS.name(),
+                HttpMethod.HEAD.name(),
+                HttpMethod.POST.name(),
+                HttpMethod.PUT.name(),
+                HttpMethod.DELETE.name())
+            .allowedHeaders("*")
+            .allowCredentials(true);
     }
 
     @Override

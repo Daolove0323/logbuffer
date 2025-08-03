@@ -1,0 +1,19 @@
+package com.daol.logbuffer._common.event;
+
+import com.daol.logbuffer.hashtag.HashtagId;
+import com.daol.logbuffer.post.command.PostAuthorId;
+import com.daol.logbuffer.post.command.PostId;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class PostUpdatedEvent extends Event {
+
+    private final PostAuthorId authorId;
+    private final PostId postId;
+    private final List<String> postImageUrls;
+    private final String thumbnailImageUrl;
+    private final List<HashtagId> hashtagIds;
+}
