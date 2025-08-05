@@ -26,6 +26,5 @@ public class AuthController {
     public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest loginReq) {
         return ApiResponse.ok(authService.login(loginReq));
     }
-
     // Todo: 추후 redis를 통한 세션 사용 및 로그아웃 구현
 }

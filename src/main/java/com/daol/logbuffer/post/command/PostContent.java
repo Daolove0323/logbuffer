@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class PostContent {
 
-    @Column(name = "content", length = 10000)
+    @Column(name = "content", length = 15000)
     private String text;
 
     public PostContent(String text) {
