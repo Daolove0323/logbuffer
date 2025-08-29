@@ -26,8 +26,16 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     // Todo: Spring Security 사용 고려
 
+    @Value("${cookie.secure}")
+    private boolean COOKIE_SECURE;
+
+    @Value("${cookie.age}")
+    private int COOKIE_AGE;
+
     @Value("${app.attribute.member}")
     private String MEMBER_ATTRIBUTE;
+
+    private static final String GUEST_ID = "guest_id";
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
     private static final int BEARER_PREFIX_LENGTH = BEARER_PREFIX.length();
@@ -72,7 +80,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("guest_id")) {
+                if (cookie.getName().equals(GUEST_ID)) {
                     GuestId guestId = new GuestId(cookie.getValue());
                     CurrentUser user = new CurrentUser(guestId, Grade.GUEST);
                     request.setAttribute(MEMBER_ATTRIBUTE, user);
@@ -83,9 +91,11 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         // 토큰과 쿠키가 없으면, 쿠키에 게스트 ID를 설정
         GuestId guestId = GuestId.generate();
-        Cookie cookie = new Cookie("guest_id", guestId.toString());
+        Cookie cookie = new Cookie(GUEST_ID, guestId.getValue().toString());
         cookie.setPath("/");
-        cookie.setMaxAge(60 * 60 * 24 * 365);
+        cookie.setMaxAge(COOKIE_AGE);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(COOKIE_SECURE);
         response.addCookie(cookie);
         CurrentUser user = new CurrentUser(guestId, Grade.GUEST);
         request.setAttribute(MEMBER_ATTRIBUTE, user);
