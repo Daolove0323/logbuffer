@@ -15,6 +15,7 @@ import java.lang.reflect.Parameter;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -34,6 +35,9 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Value("${app.attribute.member}")
     private String MEMBER_ATTRIBUTE;
+
+    @Value("${app.frontend-prod-url}")
+    private String FRONTEND_PROD_URL;
 
     private static final String GUEST_ID = "guest_id";
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -91,12 +95,14 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         // 토큰과 쿠키가 없으면, 쿠키에 게스트 ID를 설정
         GuestId guestId = GuestId.generate();
-        Cookie cookie = new Cookie(GUEST_ID, guestId.getValue().toString());
-        cookie.setPath("/");
-        cookie.setMaxAge(COOKIE_AGE);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(COOKIE_SECURE);
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(GUEST_ID, guestId.getValue().toString())
+            .path("/")
+            .maxAge(COOKIE_AGE)
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("None")
+            .build();
+        response.addHeader("Set-Cookie", cookie.toString());
         CurrentUser user = new CurrentUser(guestId, Grade.GUEST);
         request.setAttribute(MEMBER_ATTRIBUTE, user);
         return true;

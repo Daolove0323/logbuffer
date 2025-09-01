@@ -44,12 +44,12 @@ jobs:
           script: |
             PROJECT_DIR="/home/ubuntu/logbuffer"
             cd "$PROJECT_DIR"
-            git fetch
-            git reset --hard origin/dev
+            git fetch --all
+            git reset --hard remotes/origin/dev
             PID=$(sudo lsof -t -i :8080 || true)
             kill -9 "$PID"
             sleep 5
-            ./gradlew build -x test
+            ./gradlew clean build -x test
             nohup java -Dspring.datasource.url=${{ secrets.MYSQL_URL }} \
             -Dspring.datasource.username=${{ secrets.MYSQL_USER_NAME }} \
             -Dspring.datasource.password=${{ secrets.MYSQL_PASSWORD }} \
