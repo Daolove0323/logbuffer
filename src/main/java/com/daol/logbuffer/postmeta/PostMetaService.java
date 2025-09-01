@@ -32,4 +32,18 @@ public class PostMetaService {
             .orElseThrow(() -> new EntityNotFoundException("ID에 해당하는 게시글 메타정보를 찾을 수 없습니다."));
         postMeta.incrementCommentCount();
     }
+
+    @Transactional
+    public void incrementViewCount(PostId postId) {
+        PostMeta postMeta = postMetaRepository.findById(postId)
+            .orElseThrow(() -> new EntityNotFoundException("ID에 해당하는 게시글 메타정보를 찾을 수 없습니다."));
+        postMeta.incrementViewCount();
+    }
+
+    @Transactional
+    public void changeHashtags(PostId postId, List<String> newHashtags) {
+        PostMeta postMeta = postMetaRepository.findById(postId)
+            .orElseThrow(() -> new EntityNotFoundException("ID에 해당하는 게시글 메타정보를 찾을 수 없습니다."));
+        postMeta.changeHashtags(newHashtags);
+    }
 }

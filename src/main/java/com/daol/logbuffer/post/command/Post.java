@@ -91,9 +91,7 @@ public class Post {
         );
     }
 
-    public void updateDetails(String title, String description, String content, CategoryId categoryId,
-        List<HashtagId> hashtagIds,
-        PostState state) {
+    public void updateDetails(String title, String description, String content, CategoryId categoryId, List<HashtagId> hashtagIds, PostState state) {
         changeTitle(title);
         changeDescription(description);
         changeContent(content);

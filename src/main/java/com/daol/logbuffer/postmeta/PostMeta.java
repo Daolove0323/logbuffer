@@ -13,6 +13,9 @@ public class PostMeta {
     @EmbeddedId
     private PostId id;
 
+    @Column(name = "view_count")
+    private Integer viewCount;
+
     @Column(name = "like_count")
     private Integer likeCount;
 
@@ -30,12 +33,17 @@ public class PostMeta {
     public static PostMeta create(PostId postId, List<String> hashtags) {
         PostMeta postMeta = new PostMeta();
         postMeta.id = postId;
+        postMeta.viewCount = 0;
         postMeta.likeCount = 0;
         postMeta.commentCount = 0;
         postMeta.hashtags = hashtags;
         return postMeta;
     }
 
+    public void incrementViewCount() {
+        viewCount++;
+    }
+    
     public void incrementCommentCount() {
         commentCount++;
     }

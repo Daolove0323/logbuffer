@@ -26,4 +26,8 @@ public class PostThumbnailImage extends Image {
     public void setPostReference(PostId postId) {
         this.postId = postId;
     }
+
+    public void clearPostReference() {
+        this.postId = null;
+    }
 }

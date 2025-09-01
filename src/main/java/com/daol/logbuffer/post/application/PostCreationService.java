@@ -2,11 +2,8 @@ package com.daol.logbuffer.post.application;
 
 import com.daol.logbuffer._common.event.Events;
 import com.daol.logbuffer._common.event.PostCreatedEvent;
-import com.daol.logbuffer._common.util.UrlUtil;
-import com.daol.logbuffer.category.CategoryId;
-import com.daol.logbuffer.hashtag.HashtagId;
+import com.daol.logbuffer._common.util.ContentParser;
 import com.daol.logbuffer.post.command.Post;
-import com.daol.logbuffer.post.command.PostAuthorId;
 import com.daol.logbuffer.post.command.PostRepository;
 import java.util.List;
 import lombok.AccessLevel;
@@ -20,14 +17,12 @@ public class PostCreationService {
 
     private final PostRepository postRepository;
 
-    // Todo: PostImageUrls 파싱하여 이벤트 파리미터로 전달
     @Transactional
-    public PostCreationResponse createPost(PostAuthorId authorId, PostCreationRequest postReq) {
-        List<HashtagId> hashtagIds = postReq.hashtagIds().stream().map(HashtagId::new).toList();
+    public PostCreationResponse createPost(PostCreationCommand cmd) {
         Post post = postRepository.save(Post.create(
-            postReq.title(), postReq.description(), postReq.content(), authorId, new CategoryId(postReq.categoryId()), hashtagIds, postReq.state()));
-        List<String> imageUrls = UrlUtil.extractUrls(postReq.content());
-        Events.raise(new PostCreatedEvent(post.getId(), imageUrls, postReq.thumbnailImageUrl(), hashtagIds));
+            cmd.title(), cmd.description(), cmd.content(), cmd.authorId(), cmd.categoryId(), cmd.hashtagIds(), cmd.state()));
+        List<String> imageUrls = ContentParser.ParseImageUrls(cmd.content());
+        Events.raise(new PostCreatedEvent(post.getId(), imageUrls, cmd.thumbnailImageUrl(), cmd.hashtagIds()));
         return PostCreationResponse.from(post);
     }
 }

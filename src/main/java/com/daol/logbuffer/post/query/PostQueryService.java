@@ -1,10 +1,10 @@
 package com.daol.logbuffer.post.query;
 
 import com.daol.logbuffer._common.api.PageResponse;
-import com.daol.logbuffer.category.CategoryId;
-import com.daol.logbuffer.hashtag.HashtagId;
+import com.daol.logbuffer._common.event.Events;
+import com.daol.logbuffer._common.event.PostViewedEvent;
+import com.daol.logbuffer._common.exception.EntityNotFoundException;
 import com.daol.logbuffer.post.command.PostId;
-import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,15 +20,17 @@ public class PostQueryService {
 
     @Transactional(readOnly = true)
     public PostDetailResponse getPostDetail(PostId postId) {
-        return postRepository.findDetailPost(postId).orElseThrow();
+        PostDetailResponse res = postRepository.findDetailPost(postId).orElseThrow(
+            () -> new EntityNotFoundException("해당 게시글을 찾을 수 없습니다."));
+        Events.raise(new PostViewedEvent(postId));
+        return res;
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<PostPreviewResponse> getPostsByFilter(
-        Optional<CategoryId> categoryId, Optional<HashtagId> hashtagId, Optional<String> keyword, Pageable pageable
+    public PageResponse<PostPreviewResponse> getPostsByFilter(PostFilter filter, Pageable pageable
     ) {
         Page<PostPreviewResponse> posts = postRepository.findPostsByFilter(
-            pageable, categoryId.orElse(null), hashtagId.orElse(null), keyword.orElse(null));
+            pageable, filter.categoryId(), filter.hashtagId(), filter.keyword());
         return PageResponse.of(posts);
     }
 }

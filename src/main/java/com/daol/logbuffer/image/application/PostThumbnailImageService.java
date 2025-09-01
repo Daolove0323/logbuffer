@@ -10,6 +10,7 @@ import com.daol.logbuffer.image.domain.UploaderId;
 import com.daol.logbuffer.post.command.PostId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class PostThumbnailImageService extends ImageService<PostThumbnailImage> {
@@ -36,6 +37,21 @@ public class PostThumbnailImageService extends ImageService<PostThumbnailImage> 
         PostThumbnailImage image = imageRepository.findByFileName(fileName)
             .orElseThrow(() -> new EntityNotFoundException("파일명에 해당하는 이미지를 찾을 수 없습니다."));
         image.setPostReference(postId);
+    }
+
+    @Transactional
+    public void linkImageToPost(String imageUrl, PostId postId) {
+        String[] paths = imageUrl.split("/");
+        String fileName = paths[paths.length - 1];
+        setImageReference(fileName, postId);
+    }
+
+    @Transactional
+    public void resetImageReference(String imageUrl, PostId postId) {
+        PostThumbnailImage image = imageRepository.findByPostId(postId)
+            .orElseThrow(() -> new EntityNotFoundException("해당 PostId에 대한 이미지를 찾을 수 없습니다."));
+        image.clearPostReference();
+        linkImageToPost(imageUrl, postId);
     }
 
     @Transactional

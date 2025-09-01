@@ -14,6 +14,7 @@ public record PostPreviewResponse(
     PostMemberResponse author,
     PostState state,
     String thumbnailImageUrl,
+    Integer viewCount,
     Integer likeCount,
     Integer commentCount,
     String category,
