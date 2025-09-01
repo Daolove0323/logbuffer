@@ -38,6 +38,14 @@ public class PostThumbnailImageService extends ImageService<PostThumbnailImage> 
         image.setPostReference(postId);
     }
 
+    @Transactional
+    public ImageResponse createImage(UploaderId uploaderId, MultipartFile file) {
+        PostThumbnailImage image = imageRepository.save(createImageEntity(uploaderId));
+        String fileName = fileStorage.writeThumbnailFile(file, imagePathService.getImagePath(getImageType()));
+        image.changeFileName(fileName);
+        return new ImageResponse(imagePathService.getImageUrl(getImageType(), fileName));
+    }
+
     @Override
     ImageType getImageType() {
         return ImageType.POST_THUMBNAIL;

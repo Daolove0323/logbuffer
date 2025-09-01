@@ -8,5 +8,7 @@ public interface FileStorage {
 
     String writeFile(MultipartFile file, String... paths);
 
+    String writeThumbnailFile(MultipartFile file, String... paths);
+
     void deleteImageFile(String... paths);
 }

@@ -8,6 +8,7 @@ import com.daol.logbuffer.image.domain.PostImage;
 import com.daol.logbuffer.image.domain.PostImageRepository;
 import com.daol.logbuffer.image.domain.UploaderId;
 import com.daol.logbuffer.post.command.PostId;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,29 @@ public class PostImageService extends ImageService<PostImage> {
         PostImage image = imageRepository.findByFileName(fileName)
             .orElseThrow(() -> new EntityNotFoundException("파일명에 해당하는 이미지를 찾을 수 없습니다."));
         image.setPostReference(postId);
-        imageRepository.save(image);
+    }
+
+    @Transactional
+    public void resetImageReference(PostId postId, List<String> imageUrls) {
+        unlinkImagesFromPost(postId);
+        linkImagesToPost(postId, imageUrls);
+    }
+
+    @Transactional
+    public void unlinkImagesFromPost(PostId postId) {
+        List<PostImage> images = imageRepository.findAllByPostId(postId);
+        for (PostImage image : images) {
+            image.clearPostReference();
+        }
+    }
+
+    @Transactional
+    public void linkImagesToPost(PostId postId, List<String> imageUrls) {
+        for (String url : imageUrls) {
+            String[] paths = url.split("/");
+            String fileName = paths[paths.length - 1];
+            setImageReference(fileName, postId);
+        }
     }
 
     @Override

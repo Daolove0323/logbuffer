@@ -54,6 +54,9 @@ dependencies {
     // jackson
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
+    // thumbnailator
+    implementation 'net.coobird:thumbnailator:0.4.20'
+
     // junit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

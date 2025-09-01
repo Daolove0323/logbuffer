@@ -2,15 +2,20 @@ package com.daol.logbuffer.image.infra;
 
 import com.daol.logbuffer._common.exception.FileIOException;
 import com.daol.logbuffer.image.application.FileStorage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class LocalFileStorage implements FileStorage {
+
+    public static final int THUMBNAIL_WIDTH = 500;
+    public static final int THUMBNAIL_HEIGHT = 500;
 
     public byte[] readFile(String... paths) {
         try {
@@ -30,6 +35,21 @@ public class LocalFileStorage implements FileStorage {
             throw new FileIOException("파일 저장 중 오류가 발생했습니다");
         }
         return fileName;
+    }
+
+    public String writeThumbnailFile(MultipartFile file, String... paths) {
+        String originFileName = writeFile(file, paths);
+        String thumbnailFileName = originFileName.split("\\.")[0] + "_th.png";
+        try {
+            String filePath = String.join("/", paths);
+            Files.createDirectories(Path.of(filePath));
+            Thumbnails.of(new File(filePath, originFileName))
+                .size(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+                .toFile(new File(filePath, thumbnailFileName));
+        } catch (IOException e) {
+            throw new FileIOException("썸네일 파일 저장 중 오류가 발생했습니다");
+        }
+        return thumbnailFileName;
     }
 
     public void deleteImageFile(String... paths) {
