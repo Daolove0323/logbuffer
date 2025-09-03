@@ -48,9 +48,8 @@ public class PostThumbnailImageService extends ImageService<PostThumbnailImage> 
 
     @Transactional
     public void resetImageReference(String imageUrl, PostId postId) {
-        PostThumbnailImage image = imageRepository.findByPostId(postId)
-            .orElseThrow(() -> new EntityNotFoundException("해당 PostId에 대한 이미지를 찾을 수 없습니다."));
-        image.clearPostReference();
+        imageRepository.findByPostId(postId)
+            .ifPresent(PostThumbnailImage::clearPostReference);
         linkImageToPost(imageUrl, postId);
     }
 
