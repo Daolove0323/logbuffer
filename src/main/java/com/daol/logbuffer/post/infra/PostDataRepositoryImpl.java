@@ -164,6 +164,7 @@ public class PostDataRepositoryImpl implements PostDataRepository {
             .select(new QPostDetailResponse(
                 postData.id.value,
                 postData.title,
+                postData.description,
                 postData.content.text,
                 new QPostMemberResponse(
                     postData.postAuthorId.value,

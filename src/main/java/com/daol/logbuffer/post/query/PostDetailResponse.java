@@ -10,6 +10,7 @@ import java.util.UUID;
 public record PostDetailResponse(
     UUID postId,
     String title,
+    String description,
     String content,
     PostMemberResponse author,
     PostState state,
