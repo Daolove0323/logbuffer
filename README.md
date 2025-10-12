@@ -29,7 +29,7 @@
 |------|------|
 | **Frontend** | TypeScript, React, TailwindCSS |
 | **Backend** | Java, SpringBoot, JPA |
-| **Infra** | AWS S3, AWS Route 53, Vercel, GitHub Actions |
+| **Infra** | AWS EC2, AWS Route 53, AWS ELB, Vercel, GitHub Actions |
 
 <br>
 
