@@ -85,7 +85,7 @@
 
 > <i>Read Committed</i> 트랜잭션 격리수준에서 동시에 좋아요를 누른다면 Lost Update가 발생하기 때문입니다.
 >
-> 그렇다고 Repeatable Read 수준으로 올린다면, 지나친 동시성 저하가 발생합니다.
+> 그렇다고 <i>Repeatable Read</i> 수준으로 올린다면, 지나친 동시성 저하가 발생합니다.
 
 <br>
 
