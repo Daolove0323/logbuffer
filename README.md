@@ -71,7 +71,7 @@
 <br>
 
 ---
-### 캐시 및 Optimistic Lock
+### Cache & Optimistic Lock
 
 > 게시글 목록 조회시, 각 게시글의 좋아요와 댓글 수가 보여야 합니다.
 > 
