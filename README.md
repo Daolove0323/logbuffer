@@ -58,7 +58,7 @@
 
 > 검색은 <i>제목, 작성자, 카테고리, 해시태그 등</i> 여러 필터에 따라 전체 데이터를 탐색하는 기능입니다.
 > 
-> 여러 조건에 따라 쿼리를 동적으로 생성하거나, 단일 쿼리를 작성한다면 비효율이 발생합니다.
+> 검색 기능 구현시, 조건절에 따라 쿼리를 동적으로 생성하거나, 단일 쿼리를 작성한다면 비효율이 발생했습니다.
 
 <br>
 
@@ -67,6 +67,127 @@
 - 데이터 100만 건에 대해 테스트하며 쿼리의 성능을 약 **55%** 개선했습니다.
   
 - 라이브러리 캐시에 적재된 실행계획을 **32개에서 5개**로 줄였습니다.
+
+#### before
+
+> 실제 코드가 아닌 설명을 위한 예시입니다.
+
+```sql
+SELECT p.제목, p.설명, u.이름 AS 작성자, p.작성일자, c.이름 AS '카테고리'
+FROM 게시글 p
+JOIN 유저 u ON p.작성자ID = u.유저ID
+JOIN 카테고리 c ON p.카테고리ID = c.카테고리ID
+JOIN 게시글메타 m ON p.게시글ID = m.게시글ID
+WHERE p.상태 = '공개됨'
+  AND ((:키워드 IS NULL) OR (p.제목 LIKE '%' || :키워드 || '%'))
+  AND ((:작성자 IS NULL) OR (u.이름 = :작성자))
+  AND ((:카테고리 IS NULL) OR (c.이름 = :카테고리))
+  AND (
+    (:해시태그 IS NULL)
+    OR EXISTS (
+        SELECT 1
+        FROM 게시글해시태그 ph
+        JOIN 해시태그 h ON ph.해시태그ID = h.해시태그ID
+        WHERE ph.게시글ID = p.게시글ID
+        AND h.이름 = :해시태그
+    )
+  )
+ORDER BY
+  CASE
+    WHEN :정렬기준 = '최신순' THEN TO_NUMBER(TO_CHAR(p.작성일자, 'YYYYMMDDHH24MISS'))
+    WHEN :정렬기준 = '오래된순' THEN -TO_NUMBER(TO_CHAR(p.작성일자, 'YYYYMMDDHH24MISS'))
+    WHEN :정렬기준 = '좋아요순' THEN m.좋아요
+    WHEN :정렬기준 = '조회수순' THEN m.조회수
+  END DESC
+OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY;
+```
+
+<br>
+
+#### after
+
+> 실제코드가 아닌 설명을 위한 예시입니다.
+
+```sql
+-- 키워드가 있는 경우
+SELECT p.제목, p.설명, u.이름 AS 작성자, p.작성일자, c.이름 AS '카테고리'
+FROM 게시글 p
+JOIN 유저 u ON p.작성자ID = u.유저ID
+JOIN 카테고리 c ON p.카테고리ID = c.카테고리ID
+JOIN 게시글메타 m ON p.게시글ID = m.게시글ID
+WHERE p.상태 = '공개됨'
+  AND ((:키워드 IS NOT NULL) AND (INSTR(p.제목, :키워드) > 0))
+  AND ((:작성자 IS NULL) OR (u.이름 = :작성자))
+  AND ((:카테고리 IS NULL) OR (c.이름 = :카테고리))
+  AND (
+    (:해시태그 IS NULL)
+    OR EXISTS (
+        SELECT 1
+        FROM 게시글해시태그 ph
+        JOIN 해시태그 h ON ph.해시태그ID = h.해시태그ID
+        WHERE ph.게시글ID = p.게시글ID
+        AND h.이름 = :해시태그
+    )
+  )
+
+UNION ALL
+
+-- 키워드가 없고 해시태그가 있는 경우
+SELECT p.제목, p.설명, u.이름 AS 작성자, p.작성일자, c.이름 AS '카테고리'
+FROM 게시글 p
+JOIN 유저 u ON p.작성자ID = u.유저ID
+JOIN 카테고리 c ON p.카테고리ID = c.카테고리ID
+JOIN 게시글메타 m ON p.게시글ID = m.게시글ID
+WHERE p.상태 = '공개됨'
+  AND :키워드 IS NULL
+  AND ((:작성자 IS NULL) OR (u.이름 = :작성자))
+  AND ((:카테고리 IS NULL) OR (c.이름 = :카테고리))
+  AND (
+    (:해시태그 IS NOT NULL)
+    AND EXISTS (
+        SELECT 1
+        FROM 게시글해시태그 ph
+        JOIN 해시태그 h ON ph.해시태그ID = h.해시태그ID
+        WHERE ph.게시글ID = p.게시글ID
+        AND h.이름 = :해시태그
+    )
+  )
+
+-- 키워드, 해시태그가 없고 작성자가 있는 경우
+SELECT p.제목, p.설명, u.이름 AS 작성자, p.작성일자, c.이름 AS '카테고리'
+FROM 게시글 p
+JOIN 유저 u ON p.작성자ID = u.유저ID
+JOIN 카테고리 c ON p.카테고리ID = c.카테고리ID
+JOIN 게시글메타 m ON p.게시글ID = m.게시글ID
+WHERE p.상태 = '공개됨'
+  AND :키워드 IS NULL
+  AND :해시태그 IS NULL
+  AND ((:작성자 IS NOT NULL) AND (u.이름 = :작성자))
+  AND ((:카테고리 IS NULL) OR (c.이름 = :카테고리))
+
+UNION ALL
+
+-- 키워드, 해시태그, 작성자가 없고 카테고리가 있는 경우
+SELECT p.제목, p.설명, u.이름 AS 작성자, p.작성일자, c.이름 AS '카테고리'
+FROM 게시글 p
+JOIN 유저 u ON p.작성자ID = u.유저ID
+JOIN 카테고리 c ON p.카테고리ID = c.카테고리ID
+JOIN 게시글메타 m ON p.게시글ID = m.게시글ID
+WHERE p.상태 = '공개됨'
+  AND :키워드 IS NULL
+  AND :해시태그 IS NULL
+  AND :작성자 IS NULL
+  AND (:카테고리 IS NOT NULL) AND (c.이름 = :카테고리)
+
+ORDER BY
+  CASE
+    WHEN :정렬기준 = '최신순' THEN TO_NUMBER(TO_CHAR(p.작성일자, 'YYYYMMDDHH24MISS'))
+    WHEN :정렬기준 = '오래된순' THEN -TO_NUMBER(TO_CHAR(p.작성일자, 'YYYYMMDDHH24MISS'))
+    WHEN :정렬기준 = '좋아요순' THEN m.좋아요
+    WHEN :정렬기준 = '조회수순' THEN m.조회수
+  END DESC
+OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY;
+```
 
 <br>
 
