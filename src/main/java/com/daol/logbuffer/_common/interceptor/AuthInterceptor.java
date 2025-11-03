@@ -96,7 +96,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         // 토큰과 쿠키가 없으면, 쿠키에 게스트 ID를 설정
         GuestId guestId = GuestId.generate();
         ResponseCookie cookie = ResponseCookie.from(GUEST_ID, guestId.getValue().toString())
-            .domain(FRONTEND_PROD_URL)
+            .domain("daol.blog")
             .path("/")
             .maxAge(COOKIE_AGE)
             .httpOnly(true)
