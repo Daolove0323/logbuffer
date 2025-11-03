@@ -179,6 +179,8 @@ WHERE p.상태 = '공개됨'
   AND :작성자 IS NULL
   AND (:카테고리 IS NOT NULL) AND (c.이름 = :카테고리)
 
+UNION ALL
+
 ORDER BY
   CASE
     WHEN :정렬기준 = '최신순' THEN TO_NUMBER(TO_CHAR(p.작성일자, 'YYYYMMDDHH24MISS'))
