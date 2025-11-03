@@ -1,0 +1,246 @@
+# LogBuffer
+
+> Logbuffer는 오라클에서 가해지는 모든 변경사항을 기록하는 메모리 공간입니다.
+> 
+> 저 또한 공부하면서 새롭게 알게 된 내용을 기록하고자 합니다.
+
+<br>
+
+**개발자로서의 저를 가장 잘 표현할 수 있는 블로그를 직접 만들어보자는 취지로 시작한 블로그입니다.**
+
+2025년 초부터 꾸준히 개발을 이어오고 있으며, 현재도 지속적으로 유지보수 중입니다.
+
+<br>
+
+---
+
+## 주요 화면
+
+| 메인 화면 | 게시글 목록 | 게시글 본문 | 게시글 작성 |
+|------------|-------------|----------|----------|
+| ![main](https://github.com/user-attachments/assets/a4cfe5fd-42cb-45a7-b84a-96584e2c4817) | ![profile](https://github.com/user-attachments/assets/5dc6397c-d69a-4a67-9ba2-04a7cbdd7bd4) | ![detail](https://github.com/user-attachments/assets/121ebf14-2237-4fb1-befc-b290d6c8d7a8) | ![write](https://github.com/user-attachments/assets/2e96f348-18bc-4075-a625-fc633a0ecc59) |
+
+<br>
+
+---
+
+## 기술 스택
+
+| 영역 | 기술 |
+|------|------|
+| **Frontend** | TypeScript, React, TailwindCSS |
+| **Backend** | Java, SpringBoot, JPA |
+| **Infra** | AWS EC2, AWS Route 53, AWS ELB, Vercel, GitHub Actions |
+
+<br>
+
+---
+
+## 구현
+
+### Domain-Driven Design(DDD)
+
+> 추후, 여러 기능이 추가되며 구조가 복잡해질 것을 고려해, DDD를 적용했습니다.
+
+<br>
+
+- 바운디드 컨텍스트를 분리해 각 도메인의 역할과 책임을 명확하게 했습니다.
+  
+- 도메인 엔티티 내부에 비즈니스 로직을 구현해 더욱 **객체지향**적이고 **가독성 좋은 코드**를 작성했습니다.
+  
+- 도메인 간 통신은 **이벤트**를 발행해 **서비스 간 결합도**를 낮췄습니다.
+
+<br>
+
+---
+
+### Query Optimization
+
+> 검색은 <i>제목, 작성자, 카테고리, 해시태그 등</i> 여러 필터에 따라 전체 데이터를 탐색하는 기능입니다.
+> 
+> 검색 기능 구현시, 조건절에 따라 쿼리를 동적으로 생성하거나, 단일 쿼리를 작성한다면 비효율이 발생했습니다.
+
+<br>
+
+- 변별력있는 컬럼을 중심으로 쿼리를 분기했습니다.
+  
+- 데이터 100만 건에 대해 테스트하며 쿼리의 성능을 약 **55%** 개선했습니다.
+  
+- 라이브러리 캐시에 적재된 실행계획을 **32개에서 5개**로 줄였습니다.
+
+#### before
+
+> 실제 코드가 아닌 설명을 위한 예시입니다.
+
+```sql
+SELECT p.제목, p.설명, u.이름 AS 작성자, p.작성일자, c.이름 AS '카테고리'
+FROM 게시글 p
+JOIN 유저 u ON p.작성자ID = u.유저ID
+JOIN 카테고리 c ON p.카테고리ID = c.카테고리ID
+JOIN 게시글메타 m ON p.게시글ID = m.게시글ID
+WHERE p.상태 = '공개됨'
+  AND ((:키워드 IS NULL) OR (p.제목 LIKE '%' || :키워드 || '%'))
+  AND ((:작성자 IS NULL) OR (u.이름 = :작성자))
+  AND ((:카테고리 IS NULL) OR (c.이름 = :카테고리))
+  AND (
+    (:해시태그 IS NULL)
+    OR EXISTS (
+        SELECT 1
+        FROM 게시글해시태그 ph
+        JOIN 해시태그 h ON ph.해시태그ID = h.해시태그ID
+        WHERE ph.게시글ID = p.게시글ID
+        AND h.이름 = :해시태그
+    )
+  )
+ORDER BY
+  CASE
+    WHEN :정렬기준 = '최신순' THEN TO_NUMBER(TO_CHAR(p.작성일자, 'YYYYMMDDHH24MISS'))
+    WHEN :정렬기준 = '오래된순' THEN -TO_NUMBER(TO_CHAR(p.작성일자, 'YYYYMMDDHH24MISS'))
+    WHEN :정렬기준 = '좋아요순' THEN m.좋아요
+    WHEN :정렬기준 = '조회수순' THEN m.조회수
+  END DESC
+OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY;
+```
+
+<br>
+
+#### after
+
+> 실제코드가 아닌 설명을 위한 예시입니다.
+
+```sql
+-- 키워드가 있는 경우
+SELECT p.제목, p.설명, u.이름 AS 작성자, p.작성일자, c.이름 AS '카테고리'
+FROM 게시글 p
+JOIN 유저 u ON p.작성자ID = u.유저ID
+JOIN 카테고리 c ON p.카테고리ID = c.카테고리ID
+JOIN 게시글메타 m ON p.게시글ID = m.게시글ID
+WHERE p.상태 = '공개됨'
+  AND ((:키워드 IS NOT NULL) AND (INSTR(p.제목, :키워드) > 0))
+  AND ((:작성자 IS NULL) OR (u.이름 = :작성자))
+  AND ((:카테고리 IS NULL) OR (c.이름 = :카테고리))
+  AND (
+    (:해시태그 IS NULL)
+    OR EXISTS (
+        SELECT 1
+        FROM 게시글해시태그 ph
+        JOIN 해시태그 h ON ph.해시태그ID = h.해시태그ID
+        WHERE ph.게시글ID = p.게시글ID
+        AND h.이름 = :해시태그
+    )
+  )
+
+UNION ALL
+
+-- 키워드가 없고 해시태그가 있는 경우
+SELECT p.제목, p.설명, u.이름 AS 작성자, p.작성일자, c.이름 AS '카테고리'
+FROM 게시글 p
+JOIN 유저 u ON p.작성자ID = u.유저ID
+JOIN 카테고리 c ON p.카테고리ID = c.카테고리ID
+JOIN 게시글메타 m ON p.게시글ID = m.게시글ID
+WHERE p.상태 = '공개됨'
+  AND :키워드 IS NULL
+  AND ((:작성자 IS NULL) OR (u.이름 = :작성자))
+  AND ((:카테고리 IS NULL) OR (c.이름 = :카테고리))
+  AND (
+    (:해시태그 IS NOT NULL)
+    AND EXISTS (
+        SELECT 1
+        FROM 게시글해시태그 ph
+        JOIN 해시태그 h ON ph.해시태그ID = h.해시태그ID
+        WHERE ph.게시글ID = p.게시글ID
+        AND h.이름 = :해시태그
+    )
+  )
+
+-- 키워드, 해시태그가 없고 작성자가 있는 경우
+SELECT p.제목, p.설명, u.이름 AS 작성자, p.작성일자, c.이름 AS '카테고리'
+FROM 게시글 p
+JOIN 유저 u ON p.작성자ID = u.유저ID
+JOIN 카테고리 c ON p.카테고리ID = c.카테고리ID
+JOIN 게시글메타 m ON p.게시글ID = m.게시글ID
+WHERE p.상태 = '공개됨'
+  AND :키워드 IS NULL
+  AND :해시태그 IS NULL
+  AND ((:작성자 IS NOT NULL) AND (u.이름 = :작성자))
+  AND ((:카테고리 IS NULL) OR (c.이름 = :카테고리))
+
+UNION ALL
+
+-- 키워드, 해시태그, 작성자가 없고 카테고리가 있는 경우
+SELECT p.제목, p.설명, u.이름 AS 작성자, p.작성일자, c.이름 AS '카테고리'
+FROM 게시글 p
+JOIN 유저 u ON p.작성자ID = u.유저ID
+JOIN 카테고리 c ON p.카테고리ID = c.카테고리ID
+JOIN 게시글메타 m ON p.게시글ID = m.게시글ID
+WHERE p.상태 = '공개됨'
+  AND :키워드 IS NULL
+  AND :해시태그 IS NULL
+  AND :작성자 IS NULL
+  AND (:카테고리 IS NOT NULL) AND (c.이름 = :카테고리)
+
+ORDER BY
+  CASE
+    WHEN :정렬기준 = '최신순' THEN TO_NUMBER(TO_CHAR(p.작성일자, 'YYYYMMDDHH24MISS'))
+    WHEN :정렬기준 = '오래된순' THEN -TO_NUMBER(TO_CHAR(p.작성일자, 'YYYYMMDDHH24MISS'))
+    WHEN :정렬기준 = '좋아요순' THEN m.좋아요
+    WHEN :정렬기준 = '조회수순' THEN m.조회수
+  END DESC
+OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY;
+```
+
+<br>
+
+---
+### Cache & Optimistic Lock
+
+> 게시글 목록 조회시, 각 게시글의 좋아요와 댓글 수가 보여야 합니다.
+> 
+> 하지만 매번 모든 게시글에 대해 집계함수를 호출한다면 비효율적일 뿐더러, 동시성이 저하됩니다.
+
+<br>
+
+- 게시글 테이블에서 **메타 테이블**을 분리해 좋아요와 댓글 수를 저장했습니다.
+  
+- **낙관적 락**을 적용해 여러 사용자가 동시에 좋아요 누르는 상황에서도 버전 정보를 비교함으로써 정합성을 보장합니다.
+
+> <i>Read Committed</i> 트랜잭션 격리수준에서 동시에 좋아요를 누른다면 Lost Update가 발생하기 때문입니다.
+>
+> 그렇다고 <i>Repeatable Read</i> 수준으로 올린다면, 지나친 동시성 저하가 발생합니다.
+
+<br>
+
+---
+
+### Factory & Template Method Pattern
+
+> 이미지는 여러 도메인에서도 사용되는 기능입니다.
+> 
+> 하지만, 사용하는 주체과 방식이 다르다보니 하나의 코드를 사용할 수도 없고, 그렇다고 모두 새로 작성하기엔 유지보수성이 떨어집니다.
+
+<br>
+
+- 컨트롤러에서 **서비스 팩토리**를 통해 각 이미지 서비스를 불러오도록 하였습니다.
+  - 하나의 컨트롤러를 사용함으로써 API를 분리하지 않도록 하였습니다.
+
+- 각 서비스는 추상 클래스를 상속하여 <i>getImage, uploadImage(), deleteImage()</i>와 같은 **공통 메서드**를 공유합니다.
+  - <i>getRepository(), createImage()</i>와 같은 세부 로직은 **서브클래스에서 오버라이드**하였습니다.
+
+- 이를 통해 **공통 로직은 재사용하면서도, 각 도메인 특화 로직은 독립적으로 유지**할 수 있도록 했습니다.
+
+<br>
+
+---
+
+### Cookie-Based Authentication
+
+> 블로그 서비스를 이용하려고 회원가입을 하는 것은 이용자에게 부담스러울 수 있습니다.
+
+<br>
+
+- 로그인한 유저는 헤더의 JWT를 통해 인증/인가하도록 구현했습니다.
+
+- 로그인하지 않은 채 블로그를 이용하면 **쿠키**를 통해 Guest Id를 부여합니다.
+  - 쿠키의 Guest Id를 통해 게스트는 댓글을 작성/수정/삭제할 수 있습니다.
+
+<br> 
